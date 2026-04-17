@@ -20,8 +20,7 @@ The goal is to create engaging tools that attract users through sound interactio
 I produce emotional and cinematic EDM focused on dark atmospheres and powerful drops.
 
 🎧 Listen here:
-https://www.youtube.com/@YOUR_CHANNEL
-
+https://www.youtube.com/@dtrxbeats
 ## 🧠 Technologies Used
 
 - HTML
