@@ -1368,3 +1368,29 @@ h4 {
     outline-offset: 3px;
     border-radius: var(--radius-sm);
 }
+
+
+.track-label {
+    font-size: 10px;
+    color: #00c8ff;
+    letter-spacing: 1px;
+}
+
+.live-dot {
+    width: 6px;
+    height: 6px;
+    background: #ff0033;
+    border-radius: 50%;
+    animation: blink 1s infinite;
+}
+
+.player-cta {
+    margin-top: 12px;
+    text-align: center;
+}
+
+.cta-text {
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 8px;
+}
