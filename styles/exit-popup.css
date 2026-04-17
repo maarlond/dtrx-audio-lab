@@ -1,0 +1,378 @@
+/* ═══════════════════════════════════════════════════
+   DTRX AUDIO LAB — exit-popup.css
+   Exit-intent overlay + popup component
+   Integra com o design system de style.css
+   ═══════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────
+   OVERLAY — fundo escurecido
+───────────────────────────────── */
+.exit-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.exit-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ─────────────────────────────────
+   POPUP CARD
+───────────────────────────────── */
+.exit-popup {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    background: #0d1120;
+    border: 1px solid rgba(0, 200, 255, 0.25);
+    border-radius: 16px;
+    overflow: hidden;
+
+    transform: translateY(24px) scale(0.97);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.exit-overlay.is-open .exit-popup {
+    transform: translateY(0) scale(1);
+}
+
+/* Borda superior neon animada */
+.exit-popup::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            #00c8ff 20%,
+            #ff0080 50%,
+            #00c8ff 80%,
+            transparent 100%);
+    background-size: 200% 100%;
+    animation: border-slide 2.5s linear infinite;
+}
+
+@keyframes border-slide {
+    0% {
+        background-position: 100% 0;
+    }
+
+    100% {
+        background-position: -100% 0;
+    }
+}
+
+/* ─────────────────────────────────
+   TOPO VISUAL — waveform decorativo
+───────────────────────────────── */
+.exit-popup__visual {
+    position: relative;
+    height: 80px;
+    background: linear-gradient(180deg, rgba(0, 200, 255, 0.06) 0%, transparent 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    overflow: hidden;
+    padding: 0 2rem;
+}
+
+.exit-popup__visual::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%,
+            rgba(0, 200, 255, 0.12) 0%,
+            transparent 70%);
+}
+
+.exit-wave-bar {
+    width: 5px;
+    border-radius: 3px;
+    background: var(--ep-color, #00c8ff);
+    opacity: 0.7;
+    animation: ep-bar-pulse var(--ep-dur, 0.7s) var(--ep-delay, 0s) ease-in-out infinite alternate;
+}
+
+@keyframes ep-bar-pulse {
+    from {
+        transform: scaleY(0.15);
+        opacity: 0.3;
+    }
+
+    to {
+        transform: scaleY(1);
+        opacity: 0.85;
+    }
+}
+
+/* ─────────────────────────────────
+   BODY DO POPUP
+───────────────────────────────── */
+.exit-popup__body {
+    padding: 1.75rem 2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Tag de urgência */
+.exit-popup__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(255, 0, 128, 0.12);
+    border: 1px solid rgba(255, 0, 128, 0.35);
+    border-radius: 100px;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    color: #ff0080;
+    width: fit-content;
+    text-transform: uppercase;
+}
+
+.exit-tag-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #ff0080;
+    animation: ep-blink 1.2s ease-in-out infinite;
+}
+
+@keyframes ep-blink {
+
+    0%,
+    100% {
+        opacity: 1;
+        box-shadow: 0 0 4px #ff0080;
+    }
+
+    50% {
+        opacity: 0.3;
+        box-shadow: none;
+    }
+}
+
+/* Headline principal */
+.exit-popup__headline {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.4rem, 5vw, 1.9rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: #e8f0ff;
+}
+
+.exit-popup__headline em {
+    font-style: normal;
+    color: transparent;
+    -webkit-text-stroke: 1.5px #00c8ff;
+    filter: drop-shadow(0 0 12px rgba(0, 200, 255, 0.6));
+}
+
+/* Subtítulo */
+.exit-popup__sub {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #6b7fa3;
+    line-height: 1.6;
+}
+
+/* Lista de benefícios */
+.exit-popup__benefits {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid rgba(0, 200, 255, 0.08);
+    border-bottom: 1px solid rgba(0, 200, 255, 0.08);
+}
+
+.exit-popup__benefits li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #9aafc8;
+    letter-spacing: 0.02em;
+}
+
+.exit-benefit-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: #00c8ff;
+}
+
+/* ─────────────────────────────────
+   ACTIONS
+───────────────────────────────── */
+.exit-popup__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+/* Botão principal — YouTube vermelho */
+.exit-btn-subscribe {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
+    padding: 0.85rem 1.5rem;
+    background: #ff0000;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.35);
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.exit-btn-subscribe::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.exit-btn-subscribe:hover {
+    background: #cc0000;
+    box-shadow: 0 0 35px rgba(255, 0, 0, 0.6), 0 0 70px rgba(255, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.exit-btn-subscribe:hover::before {
+    opacity: 1;
+}
+
+.exit-btn-subscribe:active {
+    transform: scale(0.97);
+}
+
+/* Botão secundário — "Não, obrigado" */
+.exit-btn-dismiss {
+    width: 100%;
+    padding: 0.65rem;
+    background: transparent;
+    color: #3a4a6b;
+    border: none;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: color 0.15s ease;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.exit-btn-dismiss:hover {
+    color: #6b7fa3;
+}
+
+/* ─────────────────────────────────
+   BOTÃO FECHAR (X)
+───────────────────────────────── */
+.exit-popup__close {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    z-index: 10;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    color: #6b7fa3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    padding: 0;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.exit-popup__close:hover {
+    color: #e8f0ff;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* ─────────────────────────────────
+   NOTA INFERIOR — social proof
+───────────────────────────────── */
+.exit-popup__note {
+    text-align: center;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.75rem;
+    color: #2a3a55;
+    padding-top: 0.25rem;
+}
+
+/* ─────────────────────────────────
+   RESPONSIVO
+───────────────────────────────── */
+@media (max-width: 540px) {
+    .exit-popup__body {
+        padding: 1.25rem 1.25rem 1.5rem;
+    }
+
+    .exit-popup__headline {
+        font-size: 1.3rem;
+    }
+
+    .exit-popup__visual {
+        height: 60px;
+    }
+}
+
+/* ─────────────────────────────────
+   ACESSIBILIDADE
+───────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+
+    .exit-popup::before,
+    .exit-wave-bar,
+    .exit-tag-dot {
+        animation: none;
+    }
+
+    .exit-overlay,
+    .exit-popup {
+        transition: none;
+    }
+}

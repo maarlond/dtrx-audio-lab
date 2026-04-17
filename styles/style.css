@@ -245,7 +245,7 @@ h4 {
 .btn-yt {
     background: #ff0000;
     color: #fff;
-    width: 100%;
+    /*width: 100%;*/
     box-shadow: 0 0 20px rgba(255, 0, 0, 0.35);
     margin-bottom: var(--space-sm);
 }
