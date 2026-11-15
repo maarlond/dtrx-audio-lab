@@ -17,9 +17,10 @@
 
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="styles/exit-popup.css">
+    <link rel="stylesheet" href="styles/music-library.css">
 </head>
 
-<body>
+<body id="top">
 
     <!-- ═══════════════════════════════════════════
        BACKGROUND: animated grid + particle layer
@@ -37,9 +38,13 @@
                 <span class="logo-sub">AUDIO LAB</span>
             </div>
             <nav class="header-nav">
-                <a href="#headphone-test" class="nav-link">Headphone Test</a>
-                <a href="#drop-zone" class="nav-link">Drop Zone</a>
-                <a href="#music-player" class="nav-link">Music</a>
+                <a href="#home" class="nav-link is-active"><span aria-hidden="true">⌂</span> Home</a>
+                <a href="#library" class="nav-link" data-library-view="all"><span aria-hidden="true">◈</span> Biblioteca</a>
+                <a href="#favorites" class="nav-link" data-library-view="favorites"><span aria-hidden="true">♡</span> Favoritos</a>
+                <a href="#experiences" class="nav-link"><span aria-hidden="true">◌</span> Experiências</a>
+                <span class="nav-caption">AUDIO LAB</span>
+                <a href="#headphone-test" class="nav-link nav-link--tool">Headphone Test</a>
+                <a href="#drop-zone" class="nav-link nav-link--tool">Drop Zone</a>
                 <a href="https://www.youtube.com/@dtrxbeats" target="_blank" rel="noopener" class="nav-cta">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path
@@ -54,8 +59,8 @@
     <!-- ═══════════════════════════════════════════
        HERO SECTION
   ═══════════════════════════════════════════ -->
-    <section class="hero" aria-label="Hero">
-        <div class="hero-content">
+    <section class="hero release-hero" id="home" aria-label="Hero">
+        <div class="hero-content" id="home-feature">
             <p class="hero-eyebrow">// THIS SOUND MOVES INSIDE YOUR HEAD</p>
             <h1 class="hero-title">
                 <span class="title-line">DTRX</span>
@@ -89,6 +94,10 @@
             <div class="freq-ring freq-ring--3"></div>
         </div>
     </section>
+
+    <section class="section home-recent" id="recent-releases" aria-labelledby="recent-title"><div class="section-inner"><div class="section-label">DTRX LIBRARY</div><h2 id="recent-title">Recently added</h2><div class="track-grid" id="recent-grid"></div><a class="home-more" href="#library">Explore the library →</a></div></section>
+
+    <section class="section experiences-overview" id="experiences" aria-labelledby="experiences-title"><div class="section-inner"><div class="section-label">AUDIO LAB</div><h2 id="experiences-title">Experiences</h2><p>Explore sound through headphones and feel the drop.</p><div class="experience-links"><a href="#headphone-test">Headphone &amp; Depth Test →</a><a href="#drop-zone">Drop Zone →</a></div></div></section>
 
     <!-- ═══════════════════════════════════════════
        SECTION 1 — HEADPHONE TEST
@@ -287,6 +296,51 @@
     <!-- ═══════════════════════════════════════════
        FOOTER
   ═══════════════════════════════════════════ -->
+    <section class="section music-library" id="library" aria-labelledby="library-title">
+        <div class="section-inner">
+            <div class="section-label">// 04</div>
+            <h2 class="section-title" id="library-title">DTRX<br><em>Library</em></h2>
+            <p class="section-desc">A home for original releases. Add files, artwork and details to the catalog when each track is ready.</p>
+            <div class="library-toolbar"><label class="library-search"><span class="sr-only">Search music</span><input id="track-search" type="search" placeholder="Search your library" autocomplete="off"></label><div id="genre-filters" class="genre-filters" aria-label="Filter by genre"></div></div>
+            <div class="featured-track" id="featured-track"></div>
+            <div class="library-heading"><span>All tracks</span><span id="track-count" aria-live="polite"></span></div>
+            <div class="track-grid" id="track-grid" aria-live="polite"></div><p class="library-empty" id="library-empty" hidden>No tracks match this search.</p>
+        </div>
+    </section>
+    <aside class="persistent-player" id="persistent-player" aria-label="Music player" hidden>
+        <canvas id="music-visualizer" aria-hidden="true"></canvas><audio id="library-audio" preload="metadata"></audio>
+        <button class="player-art" id="player-expand" type="button" aria-label="Open now playing"><span>DTRX</span></button>
+        <div class="persistent-player__meta"><span class="persistent-player__label" id="player-genre">DTRX AUDIO LAB</span><strong id="player-title">Select a track</strong></div>
+        <button class="player-favorite" id="player-favorite" type="button" aria-label="Add selected track to favorites" aria-pressed="false">♡</button>
+        <div class="player-transport"><button class="player-shuffle" id="player-shuffle" type="button" aria-label="Shuffle off" aria-pressed="false">⤨</button><button class="player-skip" id="player-previous" type="button" aria-label="Previous available track">⏮</button><button class="player-control" id="player-toggle" type="button" aria-label="Play selected track" disabled>▶</button><button class="player-skip" id="player-next" type="button" aria-label="Next available track">⏭</button><button class="player-repeat" id="player-repeat" type="button" aria-label="Repeat off" aria-pressed="false">↻</button></div>
+        <div class="player-timeline"><div class="player-spectrum" id="player-spectrum" aria-hidden="true"></div><input id="player-progress" type="range" min="0" max="100" value="0" aria-label="Track progress" disabled></div>
+        <span id="player-time">0:00 / 0:00</span><label class="player-volume"><span aria-hidden="true">◖</span><span class="sr-only">Volume</span><input id="player-volume" type="range" min="0" max="1" step="0.05" value="0.8"></label>
+    </aside>
+    <dialog class="track-dialog" id="track-dialog"><button class="dialog-close" id="dialog-close" type="button" aria-label="Close track details">×</button><div id="track-dialog-content"></div></dialog>
+    <dialog class="now-playing-dialog" id="now-playing-dialog" aria-labelledby="now-playing-title">
+        <button class="dialog-close" id="now-playing-close" type="button" aria-label="Close now playing">×</button>
+        <div class="now-playing-empty" id="now-playing-empty">
+            <h2>Nothing playing yet</h2><p>Choose a release from the library to start listening.</p>
+            <a class="btn btn-primary" href="#library" id="now-playing-browse">Browse library</a>
+        </div>
+        <div id="now-playing-content" hidden>
+            <div class="now-playing-layout">
+                <div class="now-playing-art" id="now-playing-art"><span>DTRX</span></div>
+                <div class="now-playing-details">
+                    <p class="featured-kicker" id="now-playing-genre">DTRX LIBRARY</p>
+                    <h2 id="now-playing-title">Now Playing</h2>
+                    <p id="now-playing-artist"></p>
+                    <canvas id="now-playing-visualizer" aria-label="Live audio spectrum" role="img"></canvas>
+                    <input id="now-playing-progress" type="range" min="0" max="100" value="0" aria-label="Track progress" disabled>
+                    <div class="now-playing-time"><span id="now-playing-elapsed">0:00</span><span id="now-playing-duration">0:00</span></div>
+                    <div class="now-playing-controls"><button id="now-playing-previous" type="button" aria-label="Previous track">Prev</button><button id="now-playing-toggle" type="button" aria-label="Play selected track" disabled>Play</button><button id="now-playing-next" type="button" aria-label="Next track">Next</button></div>
+                    <button class="now-playing-lyrics-toggle" id="now-playing-lyrics-toggle" type="button" aria-expanded="false" hidden>Lyrics</button>
+                </div>
+            </div>
+            <section class="now-playing-lyrics" id="now-playing-lyrics" aria-label="Track lyrics" hidden><p id="now-playing-lyrics-status">Loading lyrics…</p><div id="now-playing-lyrics-lines"></div></section>
+        </div>
+    </dialog>
+    <nav class="mobile-nav" aria-label="Quick navigation"><a href="#home">Home</a><a href="#library" data-library-view="all">Library</a><a href="#favorites" data-library-view="favorites">Favorites</a><a href="#experiences">Lab</a></nav>
     <footer class="site-footer" role="contentinfo">
         <div class="footer-inner">
             <div class="footer-logo">
@@ -307,6 +361,10 @@
 
     <script src="scripts/audio.js"></script>
     <script src="scripts/exit-popup.js"></script>
+    <script src="scripts/catalog.js"></script>
+    <script src="scripts/catalog.generated.js"></script>
+    <script src="scripts/music-library.js"></script>
+    <script src="scripts/navigation.js"></script>
 </body>
 
 </html>

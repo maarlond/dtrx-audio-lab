@@ -565,14 +565,101 @@ const AudioLab = (() => {
                 // Vary height using a bell curve shape
                 const pos = i / BAR_COUNT;
                 const bell = Math.sin(pos * Math.PI);
-                const h = (bell * 0.6 + 0.2 + Math.random() * 0.2) * 100;
+                const h = (bell * 0.6 + 0.2) * 100;
                 bar.style.maxHeight = `${h}%`;
-                bar.style.setProperty('--dur', `${0.5 + Math.random() * 1}s`);
-                bar.style.setProperty('--delay', `${Math.random() * 0.8}s`);
                 // Alternate colors
                 if (i % 4 === 0) bar.style.background = 'var(--neon-magenta)';
                 container.appendChild(bar);
             }
+        }
+        return { init };
+    })();
+
+    // Hero rings and bars read the player analyser state published by music-library.js.
+    // They never create an AudioContext or synthesize activity when playback is paused.
+    const heroAudioReactive = (() => {
+        let rings = [], bars = [], ticks = [], frame = 0, active = false;
+
+        function rest() {
+            rings.forEach((ring, index) => {
+                ring.style.transform = 'scale(1)';
+                ring.style.opacity = index === 2 ? '0.18' : '0.3';
+                ring.style.filter = 'none';
+            });
+            bars.forEach(bar => { bar.style.transform = 'scaleY(0.08)'; bar.style.opacity = '0.22'; });
+            ticks.forEach(tick => { tick.style.transform = 'scaleY(0.12)'; tick.style.opacity = '0.22'; });
+            const visual = document.querySelector('.hero-visual');
+            if (visual) { visual.style.setProperty('--bass-glow', '12px'); visual.style.setProperty('--bass-alpha', '.08'); visual.style.setProperty('--mid-glow', '8px'); visual.style.setProperty('--mid-alpha', '.08'); }
+        }
+
+        function tick() {
+            frame = 0;
+            const state = window.DTRX_PLAYER_AUDIO_STATE;
+            const visual = document.querySelector('.hero-visual');
+            if (document.hidden || !visual?.getClientRects().length || !state || !state.playing) { active = false; rest(); return; }
+            const bass = state.bass || 0;
+            const mid = state.mid || 0;
+            const high = state.high || 0;
+            const drive = Math.min(1, bass * 0.7 + (state.rms || 0) * 5.5 + (state.pulse || 0));
+            const spectrum = state.spectrum || [];
+            const motionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const motion = motionReduced ? 0.28 : 1;
+            if (visual) { visual.style.setProperty('--bass-glow', `${12 + drive * 36}px`); visual.style.setProperty('--bass-alpha', String(.08 + drive * .28)); visual.style.setProperty('--mid-glow', `${8 + mid * 24}px`); visual.style.setProperty('--mid-alpha', String(.08 + mid * .2)); }
+
+            rings.forEach((ring, index) => {
+                const multiplier = [0.22, 0.15, 0.1][index];
+                const scale = 1 + drive * multiplier * motion;
+                ring.style.transform = `scale(${scale})`;
+                ring.style.opacity = String(0.28 + drive * (0.55 - index * 0.07));
+                ring.style.filter = `drop-shadow(0 0 ${drive * (42 - index * 7)}px rgba(196, 139, 255, ${0.22 + drive * 0.5}))`;
+            });
+            bars.forEach((bar, index) => {
+                const spectrumIndex = Math.floor((index / Math.max(1, bars.length - 1)) * Math.min(90, spectrum.length - 1));
+                const frequency = (spectrum[spectrumIndex] || 0) / 255;
+                const height = 0.09 + (frequency * 1.35 + mid * 0.78 + high * 0.18) * motion;
+                bar.style.transform = `scaleY(${Math.min(1.55, height)})`;
+                bar.style.opacity = String(0.25 + Math.min(0.65, frequency * 0.5 + high * 0.25));
+            });
+            ticks.forEach((tick, index) => {
+                const spectrumIndex = Math.min(spectrum.length - 1, Math.round(2 * Math.pow(320, index / Math.max(1, ticks.length - 1))));
+                const energy = Math.max(0, (spectrum[spectrumIndex] || 0) / 255);
+                tick.style.transform = `scaleY(${Math.min(1.6, .12 + energy * 1.25 * motion)})`;
+                tick.style.opacity = String(.22 + energy * .72);
+            });
+            active = true;
+            frame = requestAnimationFrame(tick);
+        }
+
+        function startIfNeeded() {
+            if (!active && !frame && !document.hidden) tick();
+        }
+
+        function init() {
+            rings = [...document.querySelectorAll('.freq-ring')];
+            bars = [...document.querySelectorAll('.waveform-bar')];
+            const visual = document.querySelector('.hero-visual');
+            if (visual && !visual.querySelector('.spectrum-ticks')) {
+                const surround = document.createElement('div');
+                surround.className = 'spectrum-ticks';
+                for (let i = 0; i < 48; i++) {
+                    const tick = document.createElement('span');
+                    tick.className = 'spectrum-tick';
+                    tick.style.setProperty('--angle', `${i * 7.5}deg`);
+                    tick.appendChild(document.createElement('i'));
+                    surround.appendChild(tick);
+                }
+                visual.appendChild(surround);
+            }
+            ticks = [...document.querySelectorAll('.spectrum-tick i')];
+            if (!rings.length && !bars.length) return;
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) { if (frame) cancelAnimationFrame(frame); frame = 0; active = false; }
+                else startIfNeeded();
+            });
+            window.addEventListener('dtrx-audio-state', startIfNeeded);
+            window.addEventListener('dtrx-view-change', startIfNeeded);
+            window.addEventListener('resize', startIfNeeded);
+            rest();
         }
         return { init };
     })();
@@ -637,24 +724,10 @@ const AudioLab = (() => {
     function _init() {
         particles.init();
         heroWaveform.init();
+        heroAudioReactive.init();
         scrollReveal.init();
         ripple.init();
 
-        // Smooth active state for nav links
-        const navLinks = document.querySelectorAll('.nav-link');
-        const sections = document.querySelectorAll('.section');
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(e => {
-                if (e.isIntersecting) {
-                    const id = e.target.id;
-                    navLinks.forEach(a => {
-                        a.style.color = a.getAttribute('href') === `#${id}`
-                            ? 'var(--neon-cyan)' : '';
-                    });
-                }
-            });
-        }, { threshold: 0.4 });
-        sections.forEach(s => observer.observe(s));
     }
 
     if (document.readyState === 'loading') {
