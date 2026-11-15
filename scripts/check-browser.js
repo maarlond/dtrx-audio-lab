@@ -1,13 +1,14 @@
 'use strict';
 // Local Chrome DevTools smoke test; run against a temporary Chrome on port 9247.
-const base = 'http://127.0.0.1:9247';
+const base = `http://127.0.0.1:${process.env.DTRX_CDP_PORT || 9247}`;
+const site = `http://127.0.0.1:${process.env.DTRX_TEST_PORT || 8765}/`;
 const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function main() {
   const pages = await (await fetch(`${base}/json/list`)).json();
-  const page = pages.find(item => item.url?.startsWith('http://127.0.0.1:8765/'));
+  const page = pages.find(item => item.url?.startsWith(site));
   if (!page) throw new Error('Local DTRX tab not found');
   const socket = new WebSocket(page.webSocketDebuggerUrl);
   const pending = new Map(); let nextId = 0;
@@ -18,9 +19,11 @@ async function main() {
   const report = async label => { const state = await evaluate(`(() => { const audio=document.getElementById('library-audio'); const rect=id=>{const el=document.getElementById(id);if(!el)return null;const r=el.getBoundingClientRect();return {x:Math.round(r.x),y:Math.round(r.y),w:Math.round(r.width),h:Math.round(r.height)}};const recentInner=document.querySelector('#recent-releases .section-inner'); return {view:document.body.dataset.view,visible:[...document.querySelectorAll('body>.hero,body>.section')].filter(el=>getComputedStyle(el).display!=='none').map(el=>el.id),audio:{paused:audio.paused,time:audio.currentTime,duration:audio.duration},player:getComputedStyle(document.getElementById('persistent-player')).display,overflow:document.documentElement.scrollWidth>innerWidth,overflowNodes:[...document.querySelectorAll('body *')].filter(el=>el.getBoundingClientRect().right>innerWidth+1&&getComputedStyle(el).position!=='fixed').slice(0,5).map(el=>el.className?.baseVal||el.className||el.id),home:rect('home'),recent:rect('recent-releases'),recentInner:{className:recentInner.className,opacity:getComputedStyle(recentInner).opacity,y:recentInner.getBoundingClientRect().y},errors:window.__testErrors||[]}; })()`); console.log(label, JSON.stringify(state)); return state; };
   await call('Runtime.enable');
   await evaluate(`window.__testErrors=[];window.addEventListener('error',e=>window.__testErrors.push(e.message))`);
+  console.log('initial',JSON.stringify(await evaluate(`({url:location.href,home:document.getElementById('home-feature')?.innerHTML.slice(0,80),cover:!!document.querySelector('.release-hero__cover'),scripts:[...document.scripts].map(s=>s.src).slice(-3)})`)));
   await evaluate(`document.getElementById('now-playing-dialog').showModal()`);
   console.log('now-playing-empty',JSON.stringify(await evaluate(`({empty:!document.getElementById('now-playing-empty').hidden,content:document.getElementById('now-playing-content').hidden})`)));
   await evaluate(`document.getElementById('now-playing-close').click()`);
+  console.log('after-empty',JSON.stringify(await evaluate(`({url:location.href,hash:location.hash,cover:!!document.querySelector('.release-hero__cover')})`)));
   for (const [width,height] of [[375,812],[768,1024],[1366,768],[1920,1080]]) {
     await call('Emulation.setDeviceMetricsOverride', { width,height,deviceScaleFactor:1,mobile:width<600 });
     await wait(100); await report(`${width}x${height}`);
@@ -28,8 +31,19 @@ async function main() {
     fs.writeFileSync(path.join(os.tmpdir(), `dtrx-${width}x${height}.png`), Buffer.from(screenshot.data, 'base64'));
   }
   await evaluate(`location.hash='#library'`); await wait(100); await report('library');
+  console.log('library-layout',JSON.stringify(await evaluate(`({cards:document.querySelectorAll('#track-grid .track-card').length,cardWidth:Math.round(document.querySelector('#track-grid .track-card').getBoundingClientRect().width),coverWidth:Math.round(document.querySelector('#track-grid .track-cover').getBoundingClientRect().width),overflow:document.documentElement.scrollWidth>innerWidth})`)));
+  const libraryShot=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+  fs.writeFileSync(path.join(os.tmpdir(),'dtrx-library-desktop.png'),Buffer.from(libraryShot.data,'base64'));
+  await call('Emulation.setDeviceMetricsOverride',{width:375,height:812,deviceScaleFactor:1,mobile:true});
+  await wait(100);
+  const mobileLibraryShot=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+  fs.writeFileSync(path.join(os.tmpdir(),'dtrx-library-mobile.png'),Buffer.from(mobileLibraryShot.data,'base64'));
+  await call('Emulation.setDeviceMetricsOverride',{width:1920,height:1080,deviceScaleFactor:1,mobile:false});
+  await evaluate(`location.hash='#home'`); await wait(100); await report('home-after-library');
+  await evaluate(`location.hash='#library'`); await wait(100);
   await evaluate(`document.querySelector('[data-action="play"][data-id="falling-into-blue"]').click()`); await wait(1500); const playing = await report('playing');
-  await evaluate(`document.getElementById('player-expand').click()`); await wait(300);
+  console.log('card-playing',JSON.stringify(await evaluate(`({active:document.querySelector('#track-grid .track-card[data-track-id="falling-into-blue"]')?.classList.contains('is-playing'),button:document.querySelector('#track-grid .track-card[data-track-id="falling-into-blue"] [data-action="play"]')?.textContent,artist:document.getElementById('player-artist').textContent,spectrum:!!document.getElementById('player-spectrum')})`)));
+  await evaluate(`document.getElementById('player-open').click()`); await wait(300);
   console.log('now-playing-desktop',JSON.stringify(await evaluate(`(() => {const c=document.getElementById('now-playing-visualizer');const p=c.getContext('2d').getImageData(0,0,c.width,c.height).data;return {open:document.getElementById('now-playing-dialog').open,title:document.getElementById('now-playing-title').textContent,artist:document.getElementById('now-playing-artist').textContent,duration:document.getElementById('now-playing-duration').textContent,cover:document.querySelector('#now-playing-art img')?.complete,visualPixels:p.some(v=>v>0),lyricsButton:!document.getElementById('now-playing-lyrics-toggle').hidden,lyricLines:document.querySelectorAll('#now-playing-lyrics-lines p').length,overflow:document.documentElement.scrollWidth>innerWidth};})()`)));
   await evaluate(`document.getElementById('now-playing-lyrics-toggle').click()`);
   console.log('lyrics-open',JSON.stringify(await evaluate(`({open:!document.getElementById('now-playing-lyrics').hidden,expanded:document.getElementById('now-playing-lyrics-toggle').getAttribute('aria-expanded')})`)));
@@ -37,12 +51,20 @@ async function main() {
   fs.writeFileSync(path.join(os.tmpdir(),'dtrx-now-playing-desktop.png'),Buffer.from(desktopPlayerShot.data,'base64'));
   await evaluate(`document.getElementById('now-playing-close').click()`);
   await evaluate(`location.hash='#home'`); await wait(400);
-  const musicState = await evaluate(`(() => { const s=window.DTRX_PLAYER_AUDIO_STATE||{};const ring=document.querySelector('.freq-ring');return {context:s.context,binHz:s.binHz,bass:s.bass,mid:s.mid,high:s.high,rms:s.rms,raw:s.raw,ringTransform:ring?.style.transform,ringVisible:getComputedStyle(ring).display,coverVisible:document.querySelector('.release-hero__cover').getBoundingClientRect().width>0};})()`);
+  const musicState = await evaluate(`(() => { const s=window.DTRX_PLAYER_AUDIO_STATE||{};const art=document.querySelector('.release-hero__cover');const pixels=id=>{const c=document.getElementById(id),p=c.getContext('2d').getImageData(0,0,c.width,c.height).data;return p.some(v=>v>0)};return {context:s.context,binHz:s.binHz,bass:s.bass,mid:s.mid,high:s.high,rms:s.rms,raw:s.raw,planetScale:Number(art.style.getPropertyValue('--planet-scale')),planetBrightness:Number(art.style.getPropertyValue('--planet-brightness')),heroMiniPixels:pixels('hero-mini-visualizer'),sidebarMiniPixels:pixels('sidebar-mini-visualizer'),artVisible:art.getBoundingClientRect().width>0};})()`);
   console.log('home-visualizer', JSON.stringify(musicState));
+  if (musicState.context !== 'running' || !musicState.heroMiniPixels || !musicState.sidebarMiniPixels) throw new Error('Live mini visualizers are not drawing audio data');
   const playingShot = await call('Page.captureScreenshot', { format:'png',captureBeyondViewport:false });
   fs.writeFileSync(path.join(os.tmpdir(),'dtrx-playing.png'),Buffer.from(playingShot.data,'base64'));
+  await call('Emulation.setDeviceMetricsOverride',{width:1366,height:768,deviceScaleFactor:1,mobile:false});
+  await wait(150);
+  console.log('player-layout',JSON.stringify(await evaluate(`(() => {const box=selector=>{const r=document.querySelector(selector).getBoundingClientRect();return {x:Math.round(r.x),y:Math.round(r.y),w:Math.round(r.width),h:Math.round(r.height)}};return {track:box('.player-track'),center:box('.player-center'),transport:box('.player-transport'),timeline:box('.player-timeline'),end:box('.player-end'),cover:box('.release-hero__cover'),visualizer:box('#home .hero-visual'),overflow:document.documentElement.scrollWidth>innerWidth};})()`)));
+  const laptopShot=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+  fs.writeFileSync(path.join(os.tmpdir(),'dtrx-player-1366.png'),Buffer.from(laptopShot.data,'base64'));
   await call('Emulation.setDeviceMetricsOverride',{width:375,height:812,deviceScaleFactor:1,mobile:true});
   await wait(250); await report('mobile-playing');
+  const mobileMiniShot=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+  fs.writeFileSync(path.join(os.tmpdir(),'dtrx-mobile-mini-player.png'),Buffer.from(mobileMiniShot.data,'base64'));
   await evaluate(`document.getElementById('player-expand').click()`);
   await wait(150);
   console.log('mobile-fullscreen',JSON.stringify(await evaluate(`({open:document.getElementById('now-playing-dialog').open,cover:document.querySelector('#now-playing-art img')?.complete,overflow:document.documentElement.scrollWidth>innerWidth})`)));
@@ -60,12 +82,17 @@ async function main() {
   await evaluate(`document.getElementById('player-progress').value=20;document.getElementById('player-progress').dispatchEvent(new Event('input',{bubbles:true}));document.getElementById('player-volume').value=.3;document.getElementById('player-volume').dispatchEvent(new Event('input',{bubbles:true}))`);
   await wait(1200); console.log('seek-volume', JSON.stringify(await evaluate(`(() => {const a=document.getElementById('library-audio');return {time:a.currentTime,duration:a.duration,volume:a.volume,seekable:a.seekable.length?{start:a.seekable.start(0),end:a.seekable.end(0)}:null,networkState:a.networkState,readyState:a.readyState};})()`)));
   await evaluate(`location.hash='#home'`); await wait(500);
-  console.log('intense-visualizer', JSON.stringify(await evaluate(`(() => {const s=window.DTRX_PLAYER_AUDIO_STATE||{};return {time:document.getElementById('library-audio').currentTime,context:s.context,bass:s.bass,mid:s.mid,high:s.high,rms:s.rms,raw:s.raw,ring:document.querySelector('.freq-ring')?.style.transform};})()`)));
+  const intenseState=await evaluate(`(() => {const s=window.DTRX_PLAYER_AUDIO_STATE||{},art=document.querySelector('.release-hero__cover');return {time:document.getElementById('library-audio').currentTime,context:s.context,bass:s.bass,mid:s.mid,high:s.high,rms:s.rms,raw:s.raw,planetScale:Number(art.style.getPropertyValue('--planet-scale')),planetBrightness:Number(art.style.getPropertyValue('--planet-brightness'))};})()`);
+  console.log('intense-visualizer',JSON.stringify(intenseState));
+  if (intenseState.raw.bass <= musicState.raw.bass || intenseState.planetScale <= musicState.planetScale || intenseState.planetScale > 1.02) throw new Error('Planet does not track bass energy within safe scale');
   const intenseShot = await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
   fs.writeFileSync(path.join(os.tmpdir(),'dtrx-intense.png'),Buffer.from(intenseShot.data,'base64'));
   await evaluate(`location.hash='#track/fading-into-you'`); await wait(120); await report('shared-track');
   await evaluate(`document.getElementById('player-next').click()`); await wait(600); await report('next-track');
   await evaluate(`document.getElementById('library-audio').pause()`); await report('paused');
+  const miniAtRest=await evaluate(`(() => {const c=document.getElementById('hero-mini-visualizer'),p=c.getContext('2d').getImageData(0,0,c.width,c.height).data;return !p.some(v=>v>0)})()`);
+  console.log('mini-at-rest',miniAtRest);
+  if (!miniAtRest) throw new Error('Hero mini visualizer continued after pause');
   await evaluate(`document.getElementById('track-search').value='Falling';document.getElementById('track-search').dispatchEvent(new Event('input',{bubbles:true}))`);
   console.log('search',JSON.stringify(await evaluate(`({cards:document.querySelectorAll('#track-grid .track-card').length,title:document.querySelector('#track-grid .track-card h3')?.textContent})`)));
   await evaluate(`document.getElementById('track-search').value='';document.getElementById('track-search').dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('#track-grid [data-action="favorite"][data-id="falling-into-blue"]').click();location.hash='#favorites'`);

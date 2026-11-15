@@ -20,4 +20,4 @@ http.createServer((req, res) => {
     res.writeHead(code, headers);
     fs.createReadStream(file, { start, end }).pipe(res);
   });
-}).listen(8765, '127.0.0.1');
+}).listen(Number(process.env.DTRX_TEST_PORT || 8765), '127.0.0.1');
