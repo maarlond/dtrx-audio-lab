@@ -20,71 +20,76 @@
  * ═══════════════════════════════════════════════════════════
  */
 
-'use strict';
+"use strict";
 
 const ExitPopup = (() => {
-
-    /* ─────────────────────────────────────
+  /* ─────────────────────────────────────
        CONFIGURAÇÃO — edite aqui
     ───────────────────────────────────── */
-    const CONFIG = {
-        youtubeUrl: 'https://www.youtube.com/@dtrxbeats',
-        // Mínimo de segundos na página antes de poder disparar
-        minTimeOnPage: 15,
-        // Quantos pixels o mouse precisa estar do topo para disparar
-        topThreshold: 30,
-        // Chave no sessionStorage — popup não repete na mesma sessão
-        storageKey: 'dtrx_exit_seen',
-        // Chave no localStorage — popup não repete se o usuário já clicou "Inscrever"
-        subscribedKey: 'dtrx_subscribed',
-        // Delay em ms após o trigger antes de abrir (evita abertura acidental)
-        triggerDelay: 300,
-    };
+  const CONFIG = {
+    youtubeUrl: "https://www.youtube.com/@dtrxbeats",
+    // Mínimo de segundos na página antes de poder disparar
+    minTimeOnPage: 15,
+    // Quantos pixels o mouse precisa estar do topo para disparar
+    topThreshold: 30,
+    // Chave no sessionStorage — popup não repete na mesma sessão
+    storageKey: "dtrx_exit_seen",
+    // Chave no localStorage — popup não repete se o usuário já clicou "Inscrever"
+    subscribedKey: "dtrx_subscribed",
+    // Delay em ms após o trigger antes de abrir (evita abertura acidental)
+    triggerDelay: 300,
+  };
 
-    /* ─────────────────────────────────────
+  /* ─────────────────────────────────────
        ESTADO INTERNO
     ───────────────────────────────────── */
-    let _isOpen = false;
-    let _canTrigger = false; // true após minTimeOnPage
-    let _triggered = false; // garante disparo único por sessão
-    let _overlay = null;
-    let _triggerTimer = null;
-    let _lastScrollY = 0;
-    let _scrollVelocity = 0;
+  let _isOpen = false;
+  let _canTrigger = false; // true após minTimeOnPage
+  let _triggered = false; // garante disparo único por sessão
+  let _overlay = null;
+  let _triggerTimer = null;
+  let _lastScrollY = 0;
+  let _scrollVelocity = 0;
 
-    /* ─────────────────────────────────────
+  /* ─────────────────────────────────────
        VERIFICAÇÕES DE SESSÃO/LOCAL STORAGE
     ───────────────────────────────────── */
-    function _alreadySeen() {
-        try {
-            return (
-                sessionStorage.getItem(CONFIG.storageKey) === '1' ||
-                localStorage.getItem(CONFIG.subscribedKey) === '1'
-            );
-        } catch (_) { return false; }
+  function _alreadySeen() {
+    try {
+      return (
+        sessionStorage.getItem(CONFIG.storageKey) === "1" ||
+        localStorage.getItem(CONFIG.subscribedKey) === "1"
+      );
+    } catch (_) {
+      return false;
     }
+  }
 
-    function _markSeen() {
-        try { sessionStorage.setItem(CONFIG.storageKey, '1'); } catch (_) { }
-    }
+  function _markSeen() {
+    try {
+      sessionStorage.setItem(CONFIG.storageKey, "1");
+    } catch (_) {}
+  }
 
-    function _markSubscribed() {
-        try { localStorage.setItem(CONFIG.subscribedKey, '1'); } catch (_) { }
-    }
+  function _markSubscribed() {
+    try {
+      localStorage.setItem(CONFIG.subscribedKey, "1");
+    } catch (_) {}
+  }
 
-    /* ─────────────────────────────────────
+  /* ─────────────────────────────────────
        BUILD HTML DO POPUP
     ───────────────────────────────────── */
-    function _buildDOM() {
-        // Overlay
-        const overlay = document.createElement('div');
-        overlay.className = 'exit-overlay';
-        overlay.id = 'exit-overlay';
-        overlay.setAttribute('role', 'dialog');
-        overlay.setAttribute('aria-modal', 'true');
-        overlay.setAttribute('aria-labelledby', 'exit-headline');
+  function _buildDOM() {
+    // Overlay
+    const overlay = document.createElement("div");
+    overlay.className = "exit-overlay";
+    overlay.id = "exit-overlay";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-labelledby", "exit-headline");
 
-        overlay.innerHTML = `
+    overlay.innerHTML = `
       <div class="exit-popup" id="exit-popup">
 
         <!-- Fechar -->
@@ -162,214 +167,219 @@ const ExitPopup = (() => {
       </div>
     `;
 
-        document.body.appendChild(overlay);
-        _overlay = overlay;
+    document.body.appendChild(overlay);
+    _overlay = overlay;
 
-        // Gera waveform decorativa
-        _buildWaveform();
+    // Gera waveform decorativa
+    _buildWaveform();
 
-        return overlay;
-    }
+    return overlay;
+  }
 
-    /* ─────────────────────────────────────
+  /* ─────────────────────────────────────
        WAVEFORM DECORATIVA (mini)
     ───────────────────────────────────── */
-    function _buildWaveform() {
-        const container = document.getElementById('exit-waveform');
-        if (!container) return;
-        const BAR_COUNT = 36;
-        for (let i = 0; i < BAR_COUNT; i++) {
-            const bar = document.createElement('div');
-            bar.className = 'exit-wave-bar';
-            // Perfil de onda: mais alto no centro
-            const pos = i / BAR_COUNT;
-            const bell = Math.sin(pos * Math.PI);
-            const h = (bell * 0.7 + 0.2 + Math.random() * 0.1) * 100;
-            bar.style.height = `${h}%`;
-            // Alterna cyan / magenta
-            bar.style.setProperty('--ep-color', i % 5 === 0 ? '#ff0080' : '#00c8ff');
-            bar.style.setProperty('--ep-dur', `${0.4 + Math.random() * 0.9}s`);
-            bar.style.setProperty('--ep-delay', `${Math.random() * 0.7}s`);
-            container.appendChild(bar);
-        }
+  function _buildWaveform() {
+    const container = document.getElementById("exit-waveform");
+    if (!container) return;
+    const BAR_COUNT = 36;
+    for (let i = 0; i < BAR_COUNT; i++) {
+      const bar = document.createElement("div");
+      bar.className = "exit-wave-bar";
+      // Perfil de onda: mais alto no centro
+      const pos = i / BAR_COUNT;
+      const bell = Math.sin(pos * Math.PI);
+      const h = (bell * 0.7 + 0.2 + Math.random() * 0.1) * 100;
+      bar.style.height = `${h}%`;
+      // Alterna cyan / magenta
+      bar.style.setProperty("--ep-color", i % 5 === 0 ? "#ff0080" : "#00c8ff");
+      bar.style.setProperty("--ep-dur", `${0.4 + Math.random() * 0.9}s`);
+      bar.style.setProperty("--ep-delay", `${Math.random() * 0.7}s`);
+      container.appendChild(bar);
     }
+  }
 
-    /* ─────────────────────────────────────
+  /* ─────────────────────────────────────
        ABRIR POPUP
     ───────────────────────────────────── */
-    function open() {
-        if (_isOpen || _alreadySeen()) return;
-        if (!_overlay) _buildDOM();
+  function open() {
+    if (_isOpen || _alreadySeen()) return;
+    if (!_overlay) _buildDOM();
 
-        _isOpen = true;
-        _markSeen();
+    _isOpen = true;
+    _markSeen();
 
-        // Foco no popup para acessibilidade
-        requestAnimationFrame(() => {
-            _overlay.classList.add('is-open');
-            const closeBtn = document.getElementById('exit-close');
-            if (closeBtn) closeBtn.focus();
-        });
+    // Foco no popup para acessibilidade
+    requestAnimationFrame(() => {
+      _overlay.classList.add("is-open");
+      const closeBtn = document.getElementById("exit-close");
+      if (closeBtn) closeBtn.focus();
+    });
 
-        // Trava scroll do body
-        document.body.style.overflow = 'hidden';
+    // Trava scroll do body
+    document.body.style.overflow = "hidden";
 
-        _bindEvents();
+    _bindEvents();
 
-        // Analytics hook (descomente e substitua pela sua implementação)
-        _trackEvent('exit_popup_shown');
-    }
+    // Analytics hook (descomente e substitua pela sua implementação)
+    _trackEvent("exit_popup_shown");
+  }
 
-    /* ─────────────────────────────────────
+  /* ─────────────────────────────────────
        FECHAR POPUP
     ───────────────────────────────────── */
-    function close() {
-        if (!_isOpen) return;
-        _isOpen = false;
-        _overlay.classList.remove('is-open');
-        document.body.style.overflow = '';
+  function close() {
+    if (!_isOpen) return;
+    _isOpen = false;
+    _overlay.classList.remove("is-open");
+    document.body.style.overflow = "";
 
-        // Animação de saída — remove após transição
-        setTimeout(() => {
-            if (_overlay && _overlay.parentNode) {
-                _overlay.parentNode.removeChild(_overlay);
-                _overlay = null;
-            }
-        }, 400);
+    // Animação de saída — remove após transição
+    setTimeout(() => {
+      if (_overlay && _overlay.parentNode) {
+        _overlay.parentNode.removeChild(_overlay);
+        _overlay = null;
+      }
+    }, 400);
 
-        _trackEvent('exit_popup_dismissed');
-    }
+    _trackEvent("exit_popup_dismissed");
+  }
 
-    /* ─────────────────────────────────────
+  /* ─────────────────────────────────────
        BIND EVENTS DO POPUP
     ───────────────────────────────────── */
-    function _bindEvents() {
-        // Fechar pelo X
-        const closeBtn = document.getElementById('exit-close');
-        if (closeBtn) closeBtn.addEventListener('click', close);
+  function _bindEvents() {
+    // Fechar pelo X
+    const closeBtn = document.getElementById("exit-close");
+    if (closeBtn) closeBtn.addEventListener("click", close);
 
-        // Fechar pelo "Não, obrigado"
-        const dismissBtn = document.getElementById('exit-btn-dismiss');
-        if (dismissBtn) dismissBtn.addEventListener('click', close);
+    // Fechar pelo "Não, obrigado"
+    const dismissBtn = document.getElementById("exit-btn-dismiss");
+    if (dismissBtn) dismissBtn.addEventListener("click", close);
 
-        // Fechar clicando fora do card (no overlay)
-        _overlay.addEventListener('click', e => {
-            if (e.target === _overlay) close();
-        });
+    // Fechar clicando fora do card (no overlay)
+    _overlay.addEventListener("click", (e) => {
+      if (e.target === _overlay) close();
+    });
 
-        // Fechar com Escape
-        document.addEventListener('keydown', _onKeydown);
+    // Fechar com Escape
+    document.addEventListener("keydown", _onKeydown);
 
-        // Botão principal: marcar como inscrito
-        const subBtn = document.getElementById('exit-btn-subscribe');
-        if (subBtn) {
-            subBtn.addEventListener('click', () => {
-                _markSubscribed();
-                // _trackEvent('exit_popup_subscribe_click');
-                // Fecha com um pequeno delay para o usuário ver o clique
-                setTimeout(close, 300);
-            });
-        }
+    // Botão principal: marcar como inscrito
+    const subBtn = document.getElementById("exit-btn-subscribe");
+    if (subBtn) {
+      subBtn.addEventListener("click", () => {
+        _markSubscribed();
+        // _trackEvent('exit_popup_subscribe_click');
+        // Fecha com um pequeno delay para o usuário ver o clique
+        setTimeout(close, 300);
+      });
     }
+  }
 
-    function _onKeydown(e) {
-        if (e.key === 'Escape') {
-            close();
-            document.removeEventListener('keydown', _onKeydown);
-        }
+  function _onKeydown(e) {
+    if (e.key === "Escape") {
+      close();
+      document.removeEventListener("keydown", _onKeydown);
     }
+  }
 
-    /* ─────────────────────────────────────
+  /* ─────────────────────────────────────
        TRIGGER — DESKTOP: mouseleave pelo topo
     ───────────────────────────────────── */
-    function _onMouseLeave(e) {
-        // Só dispara se o mouse sair pela borda superior
-        if (e.clientY > CONFIG.topThreshold) return;
-        _scheduleOpen();
-    }
+  function _onMouseLeave(e) {
+    // Só dispara se o mouse sair pela borda superior
+    if (e.clientY > CONFIG.topThreshold) return;
+    _scheduleOpen();
+  }
 
-    /* ─────────────────────────────────────
+  /* ─────────────────────────────────────
        TRIGGER — MOBILE: scroll para cima rápido
     ───────────────────────────────────── */
-    function _onScroll() {
-        const currentY = window.scrollY;
-        const delta = _lastScrollY - currentY; // positivo = scrollando pra cima
-        _scrollVelocity = delta;
-        _lastScrollY = currentY;
+  function _onScroll() {
+    const currentY = window.scrollY;
+    const delta = _lastScrollY - currentY; // positivo = scrollando pra cima
+    _scrollVelocity = delta;
+    _lastScrollY = currentY;
 
-        // Só dispara se:
-        // 1. Scrollou para cima (delta > 0)
-        // 2. Com velocidade suficiente (> 60px em um frame)
-        // 3. Não está no topo da página
-        if (delta > 60 && currentY > 300) {
-            _scheduleOpen();
-        }
+    // Só dispara se:
+    // 1. Scrollou para cima (delta > 0)
+    // 2. Com velocidade suficiente (> 60px em um frame)
+    // 3. Não está no topo da página
+    if (delta > 60 && currentY > 300) {
+      _scheduleOpen();
     }
+  }
 
-    /* ─────────────────────────────────────
+  /* ─────────────────────────────────────
        AGENDAMENTO COM DELAY ANTI-ACIDENTAL
     ───────────────────────────────────── */
-    function _scheduleOpen() {
-        if (_triggered || _alreadySeen() || !_canTrigger) return;
-        _triggered = true;
+  function _scheduleOpen() {
+    if (_triggered || _alreadySeen() || !_canTrigger) return;
+    _triggered = true;
 
-        clearTimeout(_triggerTimer);
-        _triggerTimer = setTimeout(open, CONFIG.triggerDelay);
-    }
+    clearTimeout(_triggerTimer);
+    _triggerTimer = setTimeout(open, CONFIG.triggerDelay);
+  }
 
-    /* ─────────────────────────────────────
+  /* ─────────────────────────────────────
        ANALYTICS HELPER (stub)
     ───────────────────────────────────── */
-    function _trackEvent(eventName) {
-        //   // Google Analytics 4:
-        if (window.gtag) gtag('event', eventName, { event_category: 'exit_popup' });
-        //   //
-        //   // Meta Pixel:
-        if (window.fbq) fbq('trackCustom', eventName);
-        console.log('[DTRX ExitPopup]', eventName);
-    }
+  function _trackEvent(eventName) {
+    //   // Google Analytics 4:
+    if (window.gtag) gtag("event", eventName, { event_category: "exit_popup" });
+    //   //
+    //   // Meta Pixel:
+    if (window.fbq) fbq("trackCustom", eventName);
+    console.log("[DTRX ExitPopup]", eventName);
+  }
 
-    /* ─────────────────────────────────────
+  /* ─────────────────────────────────────
        INIT
     ───────────────────────────────────── */
-    function init() {
-        // Não inicializa se já viu ou já se inscreveu
-        if (_alreadySeen()) return;
+  function init() {
+    // Não inicializa se já viu ou já se inscreveu
+    if (_alreadySeen()) return;
 
-        // Libera o trigger após minTimeOnPage segundos
-        setTimeout(() => { _canTrigger = true; }, CONFIG.minTimeOnPage * 1000);
+    // Libera o trigger após minTimeOnPage segundos
+    setTimeout(() => {
+      _canTrigger = true;
+    }, CONFIG.minTimeOnPage * 1000);
 
-        // Desktop: detecta saída do mouse pelo topo
-        document.addEventListener('mouseleave', _onMouseLeave);
+    // Desktop: detecta saída do mouse pelo topo
+    document.addEventListener("mouseleave", _onMouseLeave);
 
-        // Mobile: detecta scroll rápido para cima
-        let scrollThrottle = false;
-        window.addEventListener('scroll', () => {
-            if (!scrollThrottle) {
-                scrollThrottle = true;
-                requestAnimationFrame(() => {
-                    _onScroll();
-                    scrollThrottle = false;
-                });
-            }
-        }, { passive: true });
+    // Mobile: detecta scroll rápido para cima
+    let scrollThrottle = false;
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!scrollThrottle) {
+          scrollThrottle = true;
+          requestAnimationFrame(() => {
+            _onScroll();
+            scrollThrottle = false;
+          });
+        }
+      },
+      { passive: true },
+    );
 
-        // Fallback: dispara ao clicar no botão Voltar do browser (pagehide)
-        window.addEventListener('pagehide', () => {
-            if (!_triggered && _canTrigger) open();
-        });
-    }
+    // Fallback: dispara ao clicar no botão Voltar do browser (pagehide)
+    window.addEventListener("pagehide", () => {
+      if (!_triggered && _canTrigger) open();
+    });
+  }
 
-    /* ─────────────────────────────────────
+  /* ─────────────────────────────────────
        AUTO-INIT ao carregar o script
     ───────────────────────────────────── */
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 
-    // API pública (para testes manuais no console: ExitPopup.open())
-    return { open, close, init };
-
+  // API pública (para testes manuais no console: ExitPopup.open())
+  return { open, close, init };
 })();

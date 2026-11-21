@@ -1,0 +1,12 @@
+{
+  "name": "dtrx-audio-lab",
+  "private": true,
+  "scripts": {
+    "suno:sync": "node scripts/suno-sync.js --manifest data/suno-official-releases.json",
+    "suno:stage": "node scripts/suno-sync.js --manifest data/suno-official-releases.json --stage",
+    "suno:import:preview": "node scripts/suno-import.js --manifest data/suno-official-releases.json",
+    "suno:import:apply": "node scripts/suno-import.js --manifest data/suno-official-releases.json --apply",
+    "test:suno-sync": "node scripts/suno-sync.test.js",
+    "test:suno-import": "node scripts/suno-import.test.js"
+  }
+}

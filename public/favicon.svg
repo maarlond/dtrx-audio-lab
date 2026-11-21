@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="dtrx-x" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8b5cf6" />
+      <stop offset="0.52" stop-color="#b46af1" />
+      <stop offset="1" stop-color="#dc62d8" />
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="62" height="62" rx="15" fill="#110d25" stroke="#514075" stroke-width="2" />
+  <path d="M10 11h14l8 12 8-12h14L40 31l14 22H40l-8-13-8 13H10l14-22Z" fill="url(#dtrx-x)" />
+</svg>

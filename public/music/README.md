@@ -30,3 +30,19 @@ both locally and under the GitHub Pages `/dtrx-audio-lab/` project path.
 
 Do not rename an existing folder after sharing its `#track/<folder-name>` link. Keep
 distribution rights for every asset before committing it to the public repository.
+
+## Letras sincronizadas
+
+O modal acompanha automaticamente versos com tempos no arquivo `lyrics.lrc`:
+
+```text
+[00:17.83]We were running through the silence
+[00:21.59]Chasing shadows in the dark
+```
+
+O tempo deve corresponder ao início real de cada verso no áudio da pasta. Letras
+sem marcações continuam visíveis, mas não avançam automaticamente. As versões
+temporizadas de `Falling Into Blue` e `Fading Into You` foram obtidas do
+alinhamento oficial das respectivas faixas no Suno; os textos anteriores estão
+preservados como `lyrics.original.txt` nas pastas dessas faixas. A reprodução
+do site usa apenas os arquivos locais, sem consultar o Suno no navegador.

@@ -1,27 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="DTRX Audio Lab — Interactive EDM audio experience. Test your headphones, feel the drop, and enter the sound.">
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="DTRX Audio Lab — Interactive EDM audio experience. Test your headphones, feel the drop, and enter the sound."
+    />
     <title>DTRX Audio Lab</title>
+    <link rel="icon" type="image/svg+xml" href="./public/favicon.svg" />
 
     <!-- Google Fonts: Orbitron (display) + Rajdhani (body) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap"
-        rel="stylesheet">
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-    <link rel="stylesheet" href="styles/style.css">
-    <link rel="stylesheet" href="styles/exit-popup.css">
-    <link rel="stylesheet" href="styles/music-library.css">
-</head>
+    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="stylesheet" href="styles/exit-popup.css" />
+    <link rel="stylesheet" href="styles/music-library.css" />
+    <script src="scripts/sidebar.js" defer></script>
+  </head>
 
-<body id="top">
-
+  <body id="top">
     <!-- ═══════════════════════════════════════════
        BACKGROUND: animated grid + particle layer
   ═══════════════════════════════════════════ -->
@@ -32,356 +35,920 @@
        HEADER / NAV
   ═══════════════════════════════════════════ -->
     <header class="site-header">
-        <div class="header-inner">
-            <a class="logo" href="#home" aria-label="DTRX Audio Lab, ir para início">
-                <span class="logo-wordmark"><span class="logo-dtrx">DTR<span class="logo-x">X</span></span><span class="logo-sub">AUDIO LAB</span></span>
-            </a>
-            <nav class="header-nav" aria-label="Navegação principal">
-                <div class="nav-group" aria-label="Música">
-                    <p class="nav-caption">MÚSICA</p>
-                    <a href="#home" class="nav-link is-active"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></span><span>Início</span></a>
-                    <a href="#library" class="nav-link" data-library-view="all"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/></svg></span><span>Biblioteca</span></a>
-                    <a href="#favorites" class="nav-link" data-library-view="favorites"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg></span><span>Favoritos</span></a>
-                </div>
-                <div class="nav-group" aria-label="Laboratório de áudio">
-                    <p class="nav-caption">LABORATÓRIO</p>
-                    <a href="#experiences" class="nav-link"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h3l2-4 3 8 2-5 2 1h6"/></svg></span><span>Experiências</span></a>
-                    <a href="#headphone-test" class="nav-link nav-link--tool"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13v-2a9 9 0 0 1 18 0v2M3 13h3v7H4a1 1 0 0 1-1-1zm18 0h-3v7h2a1 1 0 0 0 1-1z"/></svg></span><span>Headphone Test</span></a>
-                    <a href="#drop-zone" class="nav-link nav-link--tool"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h3l2-6 4 12 2-6h5"/><path d="M4 20h16"/></svg></span><span>Drop Zone</span></a>
-                </div>
-                <canvas id="sidebar-mini-visualizer" class="sidebar-mini-visualizer" aria-hidden="true"></canvas>
-                <a href="https://www.youtube.com/@dtrxbeats" target="_blank" rel="noopener" class="nav-cta">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path
-                            d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.75 15.5v-7l6.25 3.5-6.25 3.5z" />
-                    </svg>
-                    YouTube
-                </a>
-            </nav>
+      <div class="header-inner">
+        <div class="sidebar-brand">
+          <a
+            class="logo"
+            href="#home"
+            aria-label="DTRX Audio Lab, ir para início"
+          >
+            <span class="logo-wordmark"
+              ><span class="logo-dtrx">DTR<span class="logo-x">X</span></span
+              ><span class="logo-sub">AUDIO LAB</span></span
+            >
+          </a>
+          <button
+            class="sidebar-toggle"
+            id="sidebar-toggle"
+            type="button"
+            aria-label="Recolher menu"
+            aria-expanded="true"
+            aria-controls="sidebar-navigation"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="m15 5-7 7 7 7" />
+            </svg>
+          </button>
         </div>
+        <nav
+          class="header-nav"
+          id="sidebar-navigation"
+          aria-label="Navegação principal"
+        >
+          <div class="nav-group" aria-label="Música">
+            <p class="nav-caption">MÚSICA</p>
+            <a href="#home" class="nav-link is-active"
+              ><span class="nav-icon" aria-hidden="true"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"
+                  /></svg></span
+              ><span>Início</span></a
+            >
+            <a href="#library" class="nav-link" data-library-view="all"
+              ><span class="nav-icon" aria-hidden="true"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="4" width="18" height="16" rx="2" />
+                  <path d="M3 10h18M9 10v10" /></svg></span
+              ><span>Biblioteca</span></a
+            >
+            <a href="#favorites" class="nav-link" data-library-view="favorites"
+              ><span class="nav-icon" aria-hidden="true"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"
+                  /></svg></span
+              ><span>Favoritos</span></a
+            >
+          </div>
+          <div class="nav-group" aria-label="Laboratório de áudio">
+            <p class="nav-caption">LABORATÓRIO</p>
+            <a href="#experiences" class="nav-link"
+              ><span class="nav-icon" aria-hidden="true"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M3 12h3l2-4 3 8 2-5 2 1h6" /></svg></span
+              ><span>Experiências</span></a
+            >
+            <a href="#headphone-test" class="nav-link nav-link--tool"
+              ><span class="nav-icon" aria-hidden="true"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M3 13v-2a9 9 0 0 1 18 0v2M3 13h3v7H4a1 1 0 0 1-1-1zm18 0h-3v7h2a1 1 0 0 0 1-1z"
+                  /></svg></span
+              ><span>Headphone Test</span></a
+            >
+            <a href="#drop-zone" class="nav-link nav-link--tool"
+              ><span class="nav-icon" aria-hidden="true"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M4 12h3l2-6 4 12 2-6h5" />
+                  <path d="M4 20h16" /></svg></span
+              ><span>Drop Zone</span></a
+            >
+          </div>
+          <div class="sidebar-footer">
+            <a
+              class="sidebar-release"
+              id="sidebar-release"
+              href="#track/falling-into-blue"
+              aria-label="Ver lançamento Falling Into Blue"
+            >
+              <span class="sidebar-release__art" aria-hidden="true"
+                ><canvas
+                  id="sidebar-mini-visualizer"
+                  class="sidebar-mini-visualizer"
+                ></canvas
+              ></span>
+              <span class="sidebar-release__copy"
+                ><span class="sidebar-release__eyebrow">EM DESTAQUE</span
+                ><strong id="sidebar-release-title">Falling Into Blue</strong
+                ><span class="sidebar-release__action"
+                  >Ver faixa <span aria-hidden="true">↗</span></span
+                ></span
+              >
+            </a>
+            <div
+              class="audio-engine-status"
+              id="audio-engine-status"
+              role="status"
+              aria-label="Status do motor de áudio: verificando"
+            >
+              <span class="audio-engine-status__led" aria-hidden="true"></span>
+              <span class="audio-engine-status__body"
+                ><span id="audio-engine-label"
+                  >Web Audio · Verificando</span
+                ></span
+              >
+            </div>
+            <a
+              href="https://www.youtube.com/@dtrxbeats"
+              target="_blank"
+              rel="noopener"
+              class="nav-cta"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.75 15.5v-7l6.25 3.5-6.25 3.5z"
+                />
+              </svg>
+              <span>YouTube</span>
+            </a>
+          </div>
+        </nav>
+      </div>
     </header>
-    <div class="mobile-visualizer-dock" id="mobile-visualizer-dock" aria-hidden="true" hidden>
-        <div class="release-hero__planet"></div>
-        <div class="release-hero__atmosphere"></div>
-        <canvas id="mobile-visualizer-canvas" aria-hidden="true"></canvas>
+    <div
+      class="sidebar-tooltip"
+      id="sidebar-tooltip"
+      role="tooltip"
+      hidden
+    ></div>
+    <div
+      class="mobile-visualizer-dock"
+      id="mobile-visualizer-dock"
+      aria-hidden="true"
+      hidden
+    >
+      <div class="release-hero__planet"></div>
+      <div class="release-hero__atmosphere"></div>
+      <div class="release-hero__stars" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <canvas id="mobile-visualizer-canvas" aria-hidden="true"></canvas>
     </div>
 
     <!-- ═══════════════════════════════════════════
        HERO SECTION
   ═══════════════════════════════════════════ -->
-    <section class="hero release-hero" id="home" aria-label="Hero">
-        <div class="hero-content" id="home-feature">
-            <p class="hero-eyebrow">// THIS SOUND MOVES INSIDE YOUR HEAD</p>
-            <h1 class="hero-title">
-                <span class="title-line">DTRX</span>
-                <span class="title-line accent">AUDIO LAB</span>
-            </h1>
-            <p class="hero-subtitle">
-                An interactive EDM experience built for headphone listeners.<br>
-                Test your gear. Feel the drop. Discover the music.
-            </p>
-            <div class="hero-ctas">
-                <a href="#headphone-test" class="btn btn-primary">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        aria-hidden="true">
-                        <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
-                        <path
-                            d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
-                    </svg>
-                    Start Experience
-                </a>
-                <a href="https://www.youtube.com/@dtrxbeats" target="_blank" rel="noopener" class="btn btn-ghost">
-                    Watch on YouTube
-                </a>
-            </div>
+    <section
+      class="hero release-hero"
+      id="home"
+      aria-label="Lançamento em destaque"
+    >
+      <div class="hero-content" id="home-feature">
+        <p class="hero-eyebrow">// THIS SOUND MOVES INSIDE YOUR HEAD</p>
+        <h1 class="hero-title">
+          <span class="title-line">DTRX</span>
+          <span class="title-line accent">AUDIO LAB</span>
+        </h1>
+        <p class="hero-subtitle">
+          An interactive EDM experience built for headphone listeners.<br />
+          Test your gear. Feel the drop. Discover the music.
+        </p>
+        <div class="hero-ctas">
+          <a href="#headphone-test" class="btn btn-primary">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+              <path
+                d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"
+              />
+            </svg>
+            Start Experience
+          </a>
+          <a
+            href="https://www.youtube.com/@dtrxbeats"
+            target="_blank"
+            rel="noopener"
+            class="btn btn-ghost"
+          >
+            Watch on YouTube
+          </a>
         </div>
-        <div class="hero-visual" aria-hidden="true">
-            <div class="waveform-display">
-                <div class="waveform-bars" id="hero-waveform"></div>
-            </div>
-            <!-- Reactive audio visualizer canvas (Web Audio API) - shown when playing -->
-            <canvas id="hero-audio-visualizer" aria-hidden="true"></canvas>
-            <!-- Fallback decorative rings (shown when not playing) -->
-            <div class="freq-ring freq-ring--1" aria-hidden="true"></div>
-            <div class="freq-ring freq-ring--2" aria-hidden="true"></div>
-            <div class="freq-ring freq-ring--3" aria-hidden="true"></div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="waveform-display">
+          <div class="waveform-bars" id="hero-waveform"></div>
         </div>
+        <!-- Reactive audio visualizer canvas (Web Audio API) - shown when playing -->
+        <canvas id="hero-audio-visualizer" aria-hidden="true"></canvas>
+        <!-- Fallback decorative rings (shown when not playing) -->
+        <div class="freq-ring freq-ring--1" aria-hidden="true"></div>
+        <div class="freq-ring freq-ring--2" aria-hidden="true"></div>
+        <div class="freq-ring freq-ring--3" aria-hidden="true"></div>
+      </div>
     </section>
 
-    <section class="section home-recent" id="recent-releases" aria-labelledby="recent-title"><div class="section-inner"><div class="section-label">DTRX LIBRARY</div><h2 id="recent-title">Recently added</h2><div class="track-grid" id="recent-grid"></div><a class="home-more" href="#library">Explore the library →</a></div></section>
+    <section
+      class="section home-recent"
+      id="recent-releases"
+      aria-labelledby="recent-title"
+    >
+      <div class="section-inner">
+        <div class="section-label">BIBLIOTECA DTRX</div>
+        <h2 id="recent-title">Adicionadas recentemente</h2>
+        <div class="track-grid" id="recent-grid"></div>
+        <a class="home-more" href="#library">Explorar biblioteca →</a>
+      </div>
+    </section>
 
-    <section class="section experiences-overview" id="experiences" aria-labelledby="experiences-title"><div class="section-inner"><div class="section-label">AUDIO LAB</div><h2 id="experiences-title">Experiences</h2><p>Explore sound through headphones and feel the drop.</p><div class="experience-links"><a href="#headphone-test">Headphone &amp; Depth Test →</a><a href="#drop-zone">Drop Zone →</a></div></div></section>
+    <section
+      class="section experiences-overview"
+      id="experiences"
+      aria-labelledby="experiences-title"
+    >
+      <div class="section-inner">
+        <div class="section-label">LABORATÓRIO DTRX</div>
+        <h2 id="experiences-title">Experiências</h2>
+        <p>Explore o som com fones. Escolha um teste para começar.</p>
+        <div class="experience-links">
+          <a href="#headphone-test"><span class="experience-links__number">01</span><strong>Headphone Test</strong><span>Teste os canais esquerdo e direito e experimente o campo de profundidade.</span><span class="experience-links__arrow" aria-hidden="true">↗</span></a
+          ><a href="#drop-zone"><span class="experience-links__number">02</span><strong>Drop Zone</strong><span>Ouça uma demonstração curta de impacto e acompanhe o nível sonoro.</span><span class="experience-links__arrow" aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
 
     <!-- ═══════════════════════════════════════════
        SECTION 1 — HEADPHONE TEST
   ═══════════════════════════════════════════ -->
     <section class="section" id="headphone-test" aria-labelledby="hp-title">
-        <div class="section-inner">
+      <div class="section-inner">
+        <div class="section-label">// 01</div>
+        <h2 class="section-title" id="hp-title">
+          Headphone<br /><em>Test</em>
+        </h2>
+        <p class="section-desc">
+          Coloque os fones e confira a separação estéreo. Um tom percorre os
+          canais esquerdo e direito para ajudar você a avaliar seu equipamento.
+        </p>
 
-            <div class="section-label">// 01</div>
-            <h2 class="section-title" id="hp-title">Headphone<br><em>Test</em></h2>
-            <p class="section-desc">
-                Put on your headphones and verify your stereo imaging. A tone will sweep smoothly from the left channel
-                to the right — the clearer the separation, the better your setup.
-            </p>
-
-            <div class="hp-card">
-                <!-- Channel indicator -->
-                <div class="channel-display" aria-live="polite" aria-label="Channel indicator">
-                    <div class="channel-bar">
-                        <span class="channel-label">L</span>
-                        <div class="channel-track">
-                            <div class="channel-cursor" id="channel-cursor"></div>
-                        </div>
-                        <span class="channel-label">R</span>
-                    </div>
-                    <div class="channel-meters">
-                        <div class="meter meter--left" id="meter-left">
-                            <div class="meter-fill"></div>
-                        </div>
-                        <div class="meter meter--right" id="meter-right">
-                            <div class="meter-fill"></div>
-                        </div>
-                    </div>
-                    <p class="channel-status" id="channel-status">Ready</p>
-                </div>
-
-                <!-- Controls -->
-                <div class="hp-controls">
-                    <button class="btn btn-primary" id="btn-start-test" onclick="AudioLab.headphone.start()">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <polygon points="5 3 19 12 5 21 5 3" />
-                        </svg>
-                        Start Test
-                    </button>
-                    <button class="btn btn-ghost" id="btn-stop-test" onclick="AudioLab.headphone.stop()" disabled>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <rect x="6" y="6" width="12" height="12" rx="1" />
-                        </svg>
-                        Stop
-                    </button>
-                </div>
-
-                <!-- Depth Test -->
-                <div class="depth-test">
-                    <h3>Pseudo 3D Depth Test</h3>
-                    <p>Experience simulated spatial audio — sounds move in a figure-8 around your head.</p>
-                    <button class="btn btn-outline" id="btn-depth-test" onclick="AudioLab.depth.toggle()">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" aria-hidden="true">
-                            <circle cx="12" cy="12" r="10" />
-                            <path d="M12 8v8M8 12h8" />
-                        </svg>
-                        Activate Depth Field
-                    </button>
-                </div>
+        <div class="hp-card">
+          <!-- Channel indicator -->
+          <div
+            class="channel-display"
+            aria-live="polite"
+            aria-label="Indicador de canais"
+          >
+            <div class="channel-bar">
+              <span class="channel-label">L</span>
+              <div class="channel-track">
+                <div class="channel-cursor" id="channel-cursor"></div>
+              </div>
+              <span class="channel-label">R</span>
             </div>
+            <div class="channel-meters">
+              <div class="meter meter--left" id="meter-left">
+                <div class="meter-fill"></div>
+              </div>
+              <div class="meter meter--right" id="meter-right">
+                <div class="meter-fill"></div>
+              </div>
+            </div>
+            <p class="channel-status" id="channel-status">Pronto</p>
+          </div>
 
+          <!-- Controls -->
+          <div class="hp-controls">
+            <button
+              class="btn btn-primary"
+              id="btn-start-test"
+              onclick="AudioLab.headphone.start()"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <polygon points="5 3 19 12 5 21 5 3" />
+              </svg>
+              Iniciar teste
+            </button>
+            <button
+              class="btn btn-ghost"
+              id="btn-stop-test"
+              onclick="AudioLab.headphone.stop()"
+              disabled
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <rect x="6" y="6" width="12" height="12" rx="1" />
+              </svg>
+              Parar
+            </button>
+          </div>
+
+          <!-- Depth Test -->
+          <div class="depth-test">
+            <h3>Teste de profundidade 3D</h3>
+            <p>
+              Experimente o áudio espacial simulado com sons que se movem ao
+              redor da sua cabeça.
+            </p>
+            <button
+              class="btn btn-outline"
+              id="btn-depth-test"
+              onclick="AudioLab.depth.toggle()"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v8M8 12h8" />
+              </svg>
+              Ativar campo de profundidade
+            </button>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- ═══════════════════════════════════════════
        SECTION 2 — DROP ZONE
   ═══════════════════════════════════════════ -->
-    <section class="section section--dark" id="drop-zone" aria-labelledby="drop-title">
-        <div class="section-inner section-inner--centered">
+    <section
+      class="section section--dark"
+      id="drop-zone"
+      aria-labelledby="drop-title"
+    >
+      <div class="section-inner section-inner--centered">
+        <div class="section-label">// 02</div>
+        <h2 class="section-title" id="drop-title">Drop<br /><em>Zone</em></h2>
+        <p class="section-desc">
+          Acione uma demonstração curta de graves e acompanhe o impacto nos
+          medidores. Ajuste o volume para um nível confortável antes de começar.
+        </p>
 
-            <div class="section-label">// 02</div>
-            <h2 class="section-title" id="drop-title">Drop<br><em>Zone</em></h2>
-            <p class="section-desc">
-                Crank the volume. Hit the button. Feel the bass hit your chest — even through headphones.
-            </p>
-
-            <!-- Drop Button -->
-            <div class="drop-arena" aria-live="polite">
-                <div class="drop-rings" id="drop-rings" aria-hidden="true">
-                    <div class="drop-ring"></div>
-                    <div class="drop-ring"></div>
-                    <div class="drop-ring"></div>
-                </div>
-                <button class="drop-btn" id="btn-drop" onclick="AudioLab.drop.fire()">
-                    <span class="drop-btn__text">DROP IT</span>
-                    <span class="drop-btn__sub">TAP TO DETONATE</span>
-                </button>
-            </div>
-
-            <!-- Drop meter -->
-            <div class="drop-meter" id="drop-meter" aria-hidden="true">
-                <div class="drop-meter-bars">
-                    <!-- JS will inject bars here -->
-                </div>
-                <p class="drop-meter-label">IMPACT LEVEL</p>
-            </div>
-
+        <!-- Drop Button -->
+        <div class="drop-arena" aria-live="polite">
+          <div class="drop-rings" id="drop-rings" aria-hidden="true">
+            <div class="drop-ring"></div>
+            <div class="drop-ring"></div>
+            <div class="drop-ring"></div>
+          </div>
+          <button class="drop-btn" id="btn-drop" onclick="AudioLab.drop.fire()">
+            <span class="drop-btn__text">OUVIR DROP</span>
+            <span class="drop-btn__sub">TOQUE PARA INICIAR</span>
+          </button>
         </div>
+
+        <!-- Drop meter -->
+        <div class="drop-meter" id="drop-meter" aria-hidden="true">
+          <div class="drop-meter-bars">
+            <!-- JS will inject bars here -->
+          </div>
+          <p class="drop-meter-label">NÍVEL DE IMPACTO</p>
+        </div>
+      </div>
     </section>
 
     <!-- ═══════════════════════════════════════════
        SECTION 3 — MUSIC PLAYER + YT CTA
   ═══════════════════════════════════════════ -->
     <section class="section" id="music-player" aria-labelledby="music-title">
-        <div class="section-inner">
+      <div class="section-inner">
+        <div class="section-label">// 03</div>
+        <h2 class="section-title" id="music-title">
+          Now<br /><em>Playing</em>
+        </h2>
+        <p class="section-desc">
+          This is where the real music lives. Stream, immerse, subscribe — and
+          never miss a drop.
+        </p>
 
-            <div class="section-label">// 03</div>
-            <h2 class="section-title" id="music-title">Now<br><em>Playing</em></h2>
-            <p class="section-desc">
-                This is where the real music lives. Stream, immerse, subscribe — and never miss a drop.
+        <div class="music-grid">
+          <!-- Player Card -->
+          <div class="player-card">
+            <div class="player-header">
+              <div class="player-track-info">
+                <span class="track-label">FEATURED TRACK</span>
+                <h3 class="track-title">Escape the Darkness</h3>
+                <span class="track-artist">DTRX Beats</span>
+              </div>
+              <div class="player-badge">
+                <span class="live-dot" aria-hidden="true"></span>
+                LIVE ON YT
+              </div>
+            </div>
+            <div class="yt-embed-wrapper">
+              <iframe
+                src="https://www.youtube.com/embed/QHBEUkt2h5A?start=12&rel=0&modestbranding=1"
+                title="Escape the Darkness - DTRX Beats"
+                frameborder="0"
+                allowfullscreen
+                loading="lazy"
+              >
+              </iframe>
+            </div>
+
+            <!-- NOVO: CTA FORTE -->
+            <div class="player-cta">
+              <p>This is just a preview… the full drop hits harder 🔥</p>
+
+              <a
+                href="https://www.youtube.com/watch?v=QHBEUkt2h5A&t=12s"
+                target="_blank"
+                class="btn btn-yt"
+                onclick="trackYouTubeClick()"
+              >
+                ▶ Watch Full Drop on YouTube 🔥
+              </a>
+            </div>
+          </div>
+
+          <!-- CTA Card -->
+          <div class="cta-card">
+            <div class="cta-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.75 15.5v-7l6.25 3.5-6.25 3.5z"
+                />
+              </svg>
+            </div>
+            <h3 class="cta-title">Never miss a drop.</h3>
+            <p class="cta-body">
+              New tracks, cinematic EDM productions, and exclusive drops — all
+              on the DTRX YouTube channel. Hit subscribe and be the first to
+              hear every release.
             </p>
 
-            <div class="music-grid">
-
-                <!-- Player Card -->
-                <div class="player-card">
-                    <div class="player-header">
-                        <div class="player-track-info">
-                            <span class="track-label">FEATURED TRACK</span>
-                            <h3 class="track-title">Escape the Darkness</h3>
-                            <span class="track-artist">DTRX Beats</span>
-                        </div>
-                        <div class="player-badge">
-                            <span class="live-dot" aria-hidden="true"></span>
-                            LIVE ON YT
-                        </div>
-                    </div>
-                    <div class="yt-embed-wrapper">
-                        <iframe src="https://www.youtube.com/embed/QHBEUkt2h5A?start=12&rel=0&modestbranding=1"
-                            title="Escape the Darkness - DTRX Beats" frameborder="0" allowfullscreen loading="lazy">
-                        </iframe>
-                    </div>
-
-                    <!-- NOVO: CTA FORTE -->
-                    <div class="player-cta">
-                        <p>
-                            This is just a preview… the full drop hits harder 🔥
-                        </p>
-
-                        <a href="https://www.youtube.com/watch?v=QHBEUkt2h5A&t=12s" target="_blank" class="btn btn-yt"
-                            onclick="trackYouTubeClick()">
-                            ▶ Watch Full Drop on YouTube 🔥
-                        </a>
-                    </div>
-                </div>
-
-                <!-- CTA Card -->
-                <div class="cta-card">
-                    <div class="cta-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.75 15.5v-7l6.25 3.5-6.25 3.5z" />
-                        </svg>
-                    </div>
-                    <h3 class="cta-title">Never miss a drop.</h3>
-                    <p class="cta-body">
-                        New tracks, cinematic EDM productions, and exclusive drops — all on the DTRX YouTube channel.
-                        Hit subscribe and be the first to hear every release.
-                    </p>
-
-                    <div class="cta-stats">
-                        <div class="stat">
-                            <span class="stat-value">∞</span>
-                            <span class="stat-label">BPM energy</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-value">100%</span>
-                            <span class="stat-label">Bass certified</span>
-                        </div>
-                    </div>
-
-                    <a href="https://www.youtube.com/@dtrxbeats" target="_blank" rel="noopener" class="btn btn-yt">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <path
-                                d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.75 15.5v-7l6.25 3.5-6.25 3.5z" />
-                        </svg>
-                        Subscribe on YouTube
-                    </a>
-                    <a href="https://www.youtube.com/@dtrxbeats" target="_blank" rel="noopener"
-                        class="btn btn-ghost btn--full">
-                        Browse All Tracks →
-                    </a>
-
-                    <p class="cta-note">🔔 Turn on notifications so you never miss a release</p>
-                </div>
-
+            <div class="cta-stats">
+              <div class="stat">
+                <span class="stat-value">∞</span>
+                <span class="stat-label">BPM energy</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value">100%</span>
+                <span class="stat-label">Bass certified</span>
+              </div>
             </div>
+
+            <a
+              href="https://www.youtube.com/@dtrxbeats"
+              target="_blank"
+              rel="noopener"
+              class="btn btn-yt"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.75 15.5v-7l6.25 3.5-6.25 3.5z"
+                />
+              </svg>
+              Subscribe on YouTube
+            </a>
+            <a
+              href="https://www.youtube.com/@dtrxbeats"
+              target="_blank"
+              rel="noopener"
+              class="btn btn-ghost btn--full"
+            >
+              Browse All Tracks →
+            </a>
+
+            <p class="cta-note">
+              🔔 Turn on notifications so you never miss a release
+            </p>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- ═══════════════════════════════════════════
        FOOTER
   ═══════════════════════════════════════════ -->
-    <section class="section music-library" id="library" aria-labelledby="library-title">
-        <div class="section-inner">
-            <div class="section-label">// 04</div>
-            <h2 class="section-title" id="library-title">DTRX<br><em>Library</em></h2>
-            <p class="section-desc">A home for original releases. Add files, artwork and details to the catalog when each track is ready.</p>
-            <div class="library-toolbar"><label class="library-search"><span class="sr-only">Search music</span><input id="track-search" type="search" placeholder="Search your library" autocomplete="off"></label><div id="genre-filters" class="genre-filters" aria-label="Filter by genre"></div></div>
-            <div class="featured-track" id="featured-track"></div>
-            <div class="library-heading"><span>All tracks</span><span id="track-count" aria-live="polite"></span></div>
-            <div class="track-grid" id="track-grid" aria-live="polite"></div><p class="library-empty" id="library-empty" hidden>No tracks match this search.</p>
+    <section
+      class="section music-library"
+      id="library"
+      aria-labelledby="library-title"
+    >
+      <div class="section-inner">
+        <div class="section-label">// 04</div>
+        <h2 class="section-title" id="library-title">
+          DTRX<br /><em>Biblioteca</em>
+        </h2>
+        <p class="section-desc" id="library-description">
+          Músicas autorais do DTRX. Áudio, capas e informações aparecem conforme
+          são adicionados ao catálogo.
+        </p>
+        <div class="library-toolbar">
+          <label class="library-search"
+            ><span class="sr-only">Buscar músicas</span
+            ><input
+              id="track-search"
+              type="search"
+              placeholder="Buscar na biblioteca"
+              autocomplete="off"
+          /></label>
+          <div
+            id="genre-filters"
+            class="genre-filters"
+            aria-label="Filtrar por gênero"
+          ></div>
         </div>
+        <div class="featured-track" id="featured-track"></div>
+        <div class="library-heading">
+          <span id="library-heading-label">Todas as faixas</span
+          ><span id="track-count" aria-live="polite"></span>
+        </div>
+        <div class="track-grid" id="track-grid" aria-live="polite"></div>
+        <p class="library-empty" id="library-empty" hidden>
+          Nenhuma faixa encontrada.
+        </p>
+      </div>
     </section>
-    <aside class="persistent-player" id="persistent-player" aria-label="Music player" hidden>
-        <canvas id="music-visualizer" aria-hidden="true"></canvas><audio id="library-audio" preload="metadata"></audio>
-        <div class="player-track">
-            <button class="player-art" id="player-expand" type="button" aria-label="Open now playing"><span>DTRX</span></button>
-            <div class="persistent-player__meta"><strong id="player-title">Select a track</strong><span class="persistent-player__label" id="player-artist">DTRX Audio Lab</span></div>
-            <button class="player-favorite" id="player-favorite" type="button" aria-label="Add selected track to favorites" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+    <aside
+      class="persistent-player"
+      id="persistent-player"
+      aria-label="Player de música"
+      hidden
+    >
+      <canvas id="music-visualizer" aria-hidden="true"></canvas
+      ><audio id="library-audio" preload="metadata"></audio>
+      <div class="player-track">
+        <button
+          class="player-art"
+          id="player-expand"
+          type="button"
+          aria-label="Abrir tela de reprodução"
+        >
+          <span>DTRX</span>
+        </button>
+        <div class="persistent-player__meta">
+          <strong id="player-title">Selecione uma faixa</strong
+          ><span class="persistent-player__label" id="player-artist"
+            >DTRX</span
+          >
         </div>
-        <div class="player-center">
-            <div class="player-transport"><button class="player-shuffle" id="player-shuffle" type="button" aria-label="Shuffle off" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h3c5 0 7 10 12 10h3m-3-3 3 3-3 3M3 17h3c2.4 0 4-2 5.5-4M15 7c1-.9 2-1 3-1h3m-3-3 3 3-3 3"/></svg></button><button class="player-skip" id="player-previous" type="button" aria-label="Previous available track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5v14m14-14L8 12l11 7z"/></svg></button><button class="player-control" id="player-toggle" type="button" aria-label="Play selected track" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z"/></svg></button><button class="player-skip" id="player-next" type="button" aria-label="Next available track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 5v14M5 5l11 7-11 7z"/></svg></button><button class="player-repeat" id="player-repeat" type="button" aria-label="Repeat off" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4m14-1v2a3 3 0 0 1-3 3H3"/></svg></button></div>
-            <div class="player-timeline"><input id="player-progress" type="range" min="0" max="100" value="0" aria-label="Track progress" disabled><span class="player-mobile-time" id="player-mobile-time" aria-hidden="true">0:00 / 0:00</span></div>
+        <button
+          class="player-favorite"
+          id="player-favorite"
+          type="button"
+          aria-label="Adicionar faixa aos favoritos"
+          aria-pressed="false"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"
+            />
+          </svg>
+        </button>
+      </div>
+      <div class="player-center">
+        <div class="player-transport">
+          <button
+            class="player-shuffle"
+            id="player-shuffle"
+            type="button"
+            aria-label="Aleatório desativado"
+            aria-pressed="false"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M3 7h3c5 0 7 10 12 10h3m-3-3 3 3-3 3M3 17h3c2.4 0 4-2 5.5-4M15 7c1-.9 2-1 3-1h3m-3-3 3 3-3 3"
+              />
+            </svg></button
+          ><button
+            class="player-skip"
+            id="player-previous"
+            type="button"
+            aria-label="Faixa anterior disponível"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 5v14m14-14L8 12l11 7z" />
+            </svg></button
+          ><button
+            class="player-control"
+            id="player-toggle"
+            type="button"
+            aria-label="Reproduzir faixa selecionada"
+            disabled
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m8 5 11 7-11 7z" />
+            </svg></button
+          ><button
+            class="player-skip"
+            id="player-next"
+            type="button"
+            aria-label="Próxima faixa disponível"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M19 5v14M5 5l11 7-11 7z" />
+            </svg></button
+          ><button
+            class="player-repeat"
+            id="player-repeat"
+            type="button"
+            aria-label="Repetição desativada"
+            aria-pressed="false"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4m14-1v2a3 3 0 0 1-3 3H3"
+              />
+            </svg>
+          </button>
         </div>
-        <div class="player-end"><span id="player-time">0:00 / 0:00</span><label class="player-volume"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9zm13-1a6 6 0 0 1 0 8m2-11a10 10 0 0 1 0 14"/></svg><span class="sr-only">Volume</span><input id="player-volume" type="range" min="0" max="1" step="0.05" value="0.8"></label><button class="player-open" id="player-open" type="button" aria-label="Open now playing"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button></div>
+        <div class="player-timeline">
+          <input
+            id="player-progress"
+            type="range"
+            min="0"
+            max="100"
+            value="0"
+            aria-label="Progresso da faixa"
+            disabled
+          /><span
+            class="player-mobile-time"
+            id="player-mobile-time"
+            aria-hidden="true"
+            >0:00 / --:--</span
+          >
+        </div>
+      </div>
+      <div class="player-end">
+        <span id="player-time">0:00 / --:--</span
+        ><label class="player-volume"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M3 9v6h4l5 4V5L7 9zm13-1a6 6 0 0 1 0 8m2-11a10 10 0 0 1 0 14"
+            /></svg
+          ><span class="sr-only">Volume</span
+          ><input
+            id="player-volume"
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+            value="0.8" /></label
+        ><button
+          class="player-open"
+          id="player-open"
+          type="button"
+          aria-label="Abrir tela de reprodução"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" />
+          </svg>
+        </button>
+      </div>
     </aside>
-    <dialog class="track-dialog" id="track-dialog"><button class="dialog-close" id="dialog-close" type="button" aria-label="Close track details">×</button><div id="track-dialog-content"></div></dialog>
-    <dialog class="now-playing-dialog" id="now-playing-dialog" aria-label="Now Playing">
-        <button class="dialog-close" id="now-playing-close" type="button" aria-label="Close now playing">×</button>
-        <div class="now-playing-empty" id="now-playing-empty">
-            <h2>Nothing playing yet</h2><p>Choose a release from the library to start listening.</p>
-            <a class="btn btn-primary" href="#library" id="now-playing-browse">Browse library</a>
-        </div>
-        <div id="now-playing-content" hidden>
-            <div class="now-playing-layout">
-                <div class="now-playing-art" id="now-playing-art"><span>DTRX</span></div>
-                <div class="now-playing-details">
-                    <p class="featured-kicker" id="now-playing-genre">DTRX LIBRARY</p>
-                    <h2 id="now-playing-title">Now Playing</h2>
-                    <p id="now-playing-artist"></p>
-                    <canvas id="now-playing-visualizer" aria-label="Live audio spectrum" role="img"></canvas>
-                    <input id="now-playing-progress" type="range" min="0" max="100" value="0" aria-label="Track progress" disabled>
-                    <div class="now-playing-time"><span id="now-playing-elapsed">0:00</span><span id="now-playing-duration">0:00</span></div>
-                    <div class="now-playing-controls"><button id="now-playing-previous" type="button" aria-label="Previous track">Prev</button><button id="now-playing-toggle" type="button" aria-label="Play selected track" disabled>Play</button><button id="now-playing-next" type="button" aria-label="Next track">Next</button></div>
-                    <button class="now-playing-lyrics-toggle" id="now-playing-lyrics-toggle" type="button" aria-expanded="false" hidden>Lyrics</button>
-                </div>
-            </div>
-            <section class="now-playing-lyrics" id="now-playing-lyrics" aria-label="Track lyrics" hidden><p id="now-playing-lyrics-status">Loading lyrics…</p><div id="now-playing-lyrics-lines"></div></section>
-        </div>
+    <dialog class="track-dialog" id="track-dialog" aria-labelledby="track-dialog-title">
+      <button
+        class="dialog-close"
+        id="dialog-close"
+        type="button"
+        aria-label="Fechar detalhes da faixa"
+      >
+        ×
+      </button>
+      <div id="track-dialog-content"></div>
     </dialog>
-    <nav class="mobile-nav" aria-label="Navegação rápida"><a href="#home">Início</a><a href="#library" data-library-view="all">Biblioteca</a><a href="#favorites" data-library-view="favorites">Favoritos</a><a href="#experiences">Lab</a></nav>
-    <footer class="site-footer" role="contentinfo">
-        <div class="footer-inner">
-            <div class="footer-logo">
-                <span class="logo-dtrx">DTRX</span>
-                <span class="logo-sub">AUDIO LAB</span>
+    <dialog
+      class="now-playing-dialog"
+      id="now-playing-dialog"
+      aria-label="Em reprodução"
+    >
+      <button
+        class="dialog-close"
+        id="now-playing-close"
+        type="button"
+        aria-label="Fechar tela de reprodução"
+      >
+        ×
+      </button>
+      <div class="now-playing-empty" id="now-playing-empty">
+        <h2>Nenhuma faixa selecionada</h2>
+        <p>Escolha uma música da biblioteca para começar a ouvir.</p>
+        <a class="btn btn-primary" href="#library" id="now-playing-browse"
+          >Explorar biblioteca</a
+        >
+      </div>
+      <div id="now-playing-content" hidden>
+        <div class="now-playing-layout">
+          <div class="now-playing-visual-column">
+            <div class="now-playing-visual-card" id="now-playing-visual-card" data-playing="false">
+              <div class="now-playing-visual-card__heading">
+                <span>ESPECTRO DTRX</span>
+                <span id="now-playing-visual-state">EM REPOUSO</span>
+              </div>
+              <canvas
+                id="now-playing-visualizer"
+                aria-label="Visualização reativa ao áudio da faixa"
+                role="img"
+              ></canvas>
             </div>
-            <p class="footer-tagline">Built with Web Audio API. Zero frameworks. Pure signal.</p>
-            <div class="footer-links">
-                <a href="https://www.youtube.com/@dtrxbeats" target="_blank" rel="noopener">YouTube</a>
-                <a href="https://github.com/maarlond/dtrx-audio-lab" target="_blank" rel="noopener">GitHub</a>
+            <div class="now-playing-mini-card">
+              <div class="now-playing-art" id="now-playing-art"><span>DTRX</span></div>
+              <div class="now-playing-mini-card__meta">
+                <strong id="now-playing-mini-title">Faixa selecionada</strong>
+                <span id="now-playing-mini-artist">DTRX</span>
+                <span id="now-playing-mini-time">0:00 / --:--</span>
+              </div>
+              <button id="now-playing-favorite" type="button" aria-label="Adicionar faixa aos favoritos" aria-pressed="false">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z" /></svg>
+              </button>
             </div>
-            <p class="footer-copy">© 2025 DTRX Beats. All rights reserved.</p>
+          </div>
+          <div class="now-playing-details">
+            <p class="featured-kicker" id="now-playing-genre">
+              BIBLIOTECA DTRX
+            </p>
+            <h2 id="now-playing-title">Em reprodução</h2>
+            <p id="now-playing-artist"></p>
+            <input
+              id="now-playing-progress"
+              type="range"
+              min="0"
+              max="100"
+              value="0"
+              aria-label="Progresso da faixa"
+              disabled
+            />
+            <div class="now-playing-time">
+              <span id="now-playing-elapsed">0:00</span
+              ><span id="now-playing-duration">--:--</span>
+            </div>
+            <div class="now-playing-controls">
+              <button id="now-playing-shuffle" type="button" aria-label="Aleatório desativado" aria-pressed="false">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h3c5 0 7 10 12 10h3m-3-3 3 3-3 3M3 17h3c2.4 0 4-2 5.5-4M15 7c1-.9 2-1 3-1h3m-3-3 3 3-3 3" /></svg>
+              </button>
+              <button
+                id="now-playing-previous"
+                type="button"
+                aria-label="Faixa anterior"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5v14m14-14L8 12l11 7z" /></svg></button
+              ><button
+                id="now-playing-toggle"
+                type="button"
+                aria-label="Reproduzir faixa selecionada"
+                disabled
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z" /></svg></button
+              ><button
+                id="now-playing-next"
+                type="button"
+                aria-label="Próxima faixa"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 5v14M5 5l11 7-11 7z" /></svg>
+              </button>
+              <button id="now-playing-repeat" type="button" aria-label="Repetição desativada" aria-pressed="false">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4m14-1v2a3 3 0 0 1-3 3H3" /></svg>
+              </button>
+            </div>
+            <label class="now-playing-volume">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9zm13-1a6 6 0 0 1 0 8m2-11a10 10 0 0 1 0 14" /></svg>
+              <span>Volume</span>
+              <input id="now-playing-volume" type="range" min="0" max="1" step="0.05" value="0.8" aria-label="Volume da reprodução" />
+            </label>
+            <button
+              class="now-playing-lyrics-toggle"
+              id="now-playing-lyrics-toggle"
+              type="button"
+              aria-expanded="false"
+              aria-controls="now-playing-lyrics"
+              hidden
+            >
+              Letras
+            </button>
+            <section
+              class="now-playing-lyrics"
+              id="now-playing-lyrics"
+              aria-label="Letras da faixa"
+              hidden
+            >
+              <p id="now-playing-lyrics-status">Carregando letras…</p>
+              <div id="now-playing-lyrics-lines"></div>
+            </section>
+          </div>
         </div>
+      </div>
+    </dialog>
+    <nav class="mobile-nav" aria-label="Navegação rápida">
+      <a href="#home">Início</a
+      ><a href="#library" data-library-view="all">Biblioteca</a
+      ><a href="#favorites" data-library-view="favorites">Favoritos</a
+      ><a href="#experiences">Lab</a>
+    </nav>
+    <footer class="site-footer" role="contentinfo">
+      <div class="footer-inner">
+        <div class="footer-logo">
+          <span class="logo-dtrx">DTRX</span>
+          <span class="logo-sub">AUDIO LAB</span>
+        </div>
+        <p class="footer-tagline">
+          Feito com Web Audio API. Sem frameworks. Som em estado puro.
+        </p>
+        <div class="footer-links">
+          <a
+            href="https://www.youtube.com/@dtrxbeats"
+            target="_blank"
+            rel="noopener"
+            >YouTube</a
+          >
+          <a
+            href="https://github.com/maarlond/dtrx-audio-lab"
+            target="_blank"
+            rel="noopener"
+            >GitHub</a
+          >
+        </div>
+        <p class="footer-copy">© 2025 DTRX Beats. All rights reserved.</p>
+      </div>
     </footer>
 
     <!-- Drop flash overlay (JS-controlled) -->
     <div class="drop-flash" id="drop-flash" aria-hidden="true"></div>
 
-    <script src="scripts/audio.js"></script>
+    <script src="scripts/audio.js?v=20261118"></script>
     <script src="scripts/exit-popup.js"></script>
     <script src="scripts/catalog.js"></script>
     <script src="scripts/catalog.generated.js"></script>
-    <script src="scripts/music-library.js"></script>
-    <script src="scripts/navigation.js"></script>
-</body>
-
+    <script src="scripts/suno-collections.js"></script>
+    <script src="scripts/music-library.js?v=20261118-8"></script>
+    <script src="scripts/suno-library.js?v=20261118"></script>
+    <script src="scripts/navigation.js?v=20261118"></script>
+  </body>
 </html>

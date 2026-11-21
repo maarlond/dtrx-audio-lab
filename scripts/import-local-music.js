@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /*
  * Local music importer — dependency free.
@@ -7,80 +7,151 @@
  * Scans public/music/<stable-id>/audio.mp3 and optional cover.webp, lyrics.lrc,
  * visualizer.mp4 and metadata.json. It only writes catalog.generated.js.
  */
-const fs = require('node:fs');
-const path = require('node:path');
+const fs = require("node:fs");
+const path = require("node:path");
 
-const projectRoot = path.resolve(__dirname, '..');
-const musicRoot = path.join(projectRoot, 'public', 'music');
-const outputPath = path.join(__dirname, 'catalog.generated.js');
+const projectRoot = path.resolve(__dirname, "..");
+const musicRoot = path.join(projectRoot, "public", "music");
+const outputPath = path.join(__dirname, "catalog.generated.js");
 const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const genres = ['Blues', 'Classic Rock', 'Country', 'Dance', 'Disco', 'Funk', 'Grunge', 'Hip-Hop', 'Jazz', 'Metal', 'New Age', 'Oldies', 'Other', 'Pop', 'R&B', 'Rap', 'Reggae', 'Rock', 'Techno', 'Industrial', 'Alternative', 'Ska', 'Death Metal', 'Pranks', 'Soundtrack', 'Euro-Techno', 'Ambient', 'Trip-Hop', 'Vocal', 'Jazz+Funk', 'Fusion', 'Trance', 'Classical', 'Instrumental', 'Acid', 'House', 'Game', 'Sound Clip', 'Gospel', 'Noise', 'Alternative Rock', 'Bass', 'Soul', 'Punk', 'Space', 'Meditative', 'Instrumental Pop', 'Instrumental Rock', 'Ethnic', 'Gothic', 'Darkwave', 'Techno-Industrial', 'Electronic'];
+const genres = [
+  "Blues",
+  "Classic Rock",
+  "Country",
+  "Dance",
+  "Disco",
+  "Funk",
+  "Grunge",
+  "Hip-Hop",
+  "Jazz",
+  "Metal",
+  "New Age",
+  "Oldies",
+  "Other",
+  "Pop",
+  "R&B",
+  "Rap",
+  "Reggae",
+  "Rock",
+  "Techno",
+  "Industrial",
+  "Alternative",
+  "Ska",
+  "Death Metal",
+  "Pranks",
+  "Soundtrack",
+  "Euro-Techno",
+  "Ambient",
+  "Trip-Hop",
+  "Vocal",
+  "Jazz+Funk",
+  "Fusion",
+  "Trance",
+  "Classical",
+  "Instrumental",
+  "Acid",
+  "House",
+  "Game",
+  "Sound Clip",
+  "Gospel",
+  "Noise",
+  "Alternative Rock",
+  "Bass",
+  "Soul",
+  "Punk",
+  "Space",
+  "Meditative",
+  "Instrumental Pop",
+  "Instrumental Rock",
+  "Ethnic",
+  "Gothic",
+  "Darkwave",
+  "Techno-Industrial",
+  "Electronic",
+];
 
-const exists = file => fs.existsSync(file);
-const fileUrl = (id, name) => `./public/music/${encodeURIComponent(id)}/${encodeURIComponent(name)}`;
-const clean = value => value ? value.replace(/\0+$/g, '').trim() : '';
+const exists = (file) => fs.existsSync(file);
+const fileUrl = (id, name) =>
+  `./public/music/${encodeURIComponent(id)}/${encodeURIComponent(name)}`;
+const clean = (value) => (value ? value.replace(/\0+$/g, "").trim() : "");
 
 function readId3v1(audioPath) {
   const size = fs.statSync(audioPath).size;
   if (size < 128) return {};
-  const fd = fs.openSync(audioPath, 'r');
+  const fd = fs.openSync(audioPath, "r");
   const buffer = Buffer.alloc(128);
   fs.readSync(fd, buffer, 0, 128, size - 128);
   fs.closeSync(fd);
-  if (buffer.toString('latin1', 0, 3) !== 'TAG') return {};
-  const title = clean(buffer.toString('latin1', 3, 33));
-  const artist = clean(buffer.toString('latin1', 33, 63));
-  const genre = genres[buffer[127]] || '';
+  if (buffer.toString("latin1", 0, 3) !== "TAG") return {};
+  const title = clean(buffer.toString("latin1", 3, 33));
+  const artist = clean(buffer.toString("latin1", 33, 63));
+  const genre = genres[buffer[127]] || "";
   return { title, artist, genre };
 }
 
 function readMetadata(folder) {
-  const file = path.join(folder, 'metadata.json');
+  const file = path.join(folder, "metadata.json");
   if (!exists(file)) return {};
   try {
-    const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
-    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+    const parsed = JSON.parse(fs.readFileSync(file, "utf8"));
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? parsed
+      : {};
   } catch (error) {
-    console.warn(`Skipping invalid metadata.json in ${path.basename(folder)}: ${error.message}`);
+    console.warn(
+      `Skipping invalid metadata.json in ${path.basename(folder)}: ${error.message}`,
+    );
     return {};
   }
 }
 
 function titleFromId(id) {
-  return id.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  return id
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }
 
 function findFile(folder, names, extensions = []) {
-  const entries = fs.readdirSync(folder, { withFileTypes: true })
-    .filter(entry => entry.isFile())
-    .map(entry => entry.name);
-  const exact = names.find(name => entries.includes(name));
+  const entries = fs
+    .readdirSync(folder, { withFileTypes: true })
+    .filter((entry) => entry.isFile())
+    .map((entry) => entry.name);
+  const exact = names.find((name) => entries.includes(name));
   if (exact) return exact;
-  return entries.find(name => extensions.includes(path.extname(name).toLowerCase())) || '';
+  return (
+    entries.find((name) =>
+      extensions.includes(path.extname(name).toLowerCase()),
+    ) || ""
+  );
 }
 
-function scanFolder(id) {
-  const folder = path.join(musicRoot, id);
-  const audioName = findFile(folder, ['audio.mp3'], ['.mp3']);
+function scanFolder(id, root = musicRoot) {
+  const folder = path.join(root, id);
+  const audioName = findFile(folder, ["audio.mp3"], [".mp3"]);
   if (!audioName) return null;
   const audioPath = path.join(folder, audioName);
-  const coverName = findFile(folder, ['cover.webp'], ['.webp', '.jpg', '.jpeg', '.png']);
-  const lyricsName = findFile(folder, ['lyrics.lrc'], ['.lrc']);
-  const visualizerName = findFile(folder, ['visualizer.mp4'], ['.mp4']);
+  const coverName = findFile(
+    folder,
+    ["cover.webp"],
+    [".webp", ".jpg", ".jpeg", ".png"],
+  );
+  const lyricsName = findFile(folder, ["lyrics.lrc"], [".lrc"]);
+  const visualizerName = findFile(folder, ["visualizer.mp4"], [".mp4"]);
   const metadata = readMetadata(folder);
   const id3 = readId3v1(audioPath);
   const duration = Number(metadata.durationSeconds);
   return {
     id,
     title: metadata.title || id3.title || titleFromId(id),
-    artist: metadata.artist || id3.artist || '',
-    genre: metadata.genre || id3.genre || '',
+    artist: metadata.artist || id3.artist || "",
+    genre: metadata.genre || id3.genre || "",
     duration: Number.isFinite(duration) && duration > 0 ? duration : null,
     audioUrl: fileUrl(id, audioName),
-    coverUrl: coverName ? fileUrl(id, coverName) : '',
-    lyricsUrl: lyricsName ? fileUrl(id, lyricsName) : '',
-    visualizerUrl: visualizerName ? fileUrl(id, visualizerName) : '',
-    autoGenerated: true
+    coverUrl: coverName ? fileUrl(id, coverName) : "",
+    lyricsUrl: lyricsName ? fileUrl(id, lyricsName) : "",
+    visualizerUrl: visualizerName ? fileUrl(id, visualizerName) : "",
+    autoGenerated: true,
   };
 }
 
@@ -89,15 +160,27 @@ function buildFile(tracks) {
   return `'use strict';\n\n// Generated by scripts/import-local-music.js — do not hand edit.\n(() => {\n  const imported = ${serialized};\n  const current = window.DTRX_CATALOG || [];\n  const byId = new Map(current.map(track => [track.id, track]));\n  const merged = imported.map(asset => {\n    const manual = byId.get(asset.id) || {};\n    const result = { ...asset };\n    for (const [key, value] of Object.entries(manual)) {\n      if (value !== '' && value !== null && value !== undefined) result[key] = value;\n    }\n    return result;\n  });\n  const importedIds = new Set(imported.map(track => track.id));\n  window.DTRX_CATALOG = [...current.filter(track => !importedIds.has(track.id)), ...merged];\n})();\n`;
 }
 
-if (!exists(musicRoot)) {
-  console.log('No public/music directory yet; generated catalog remains unchanged.');
-  process.exit(0);
+function generateCatalog(root = musicRoot, output = outputPath) {
+  if (!exists(root)) return { tracks: [], written: false };
+  const tracks = fs
+    .readdirSync(root, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && idPattern.test(entry.name))
+    .map((entry) => scanFolder(entry.name, root))
+    .filter(Boolean);
+  fs.writeFileSync(output, buildFile(tracks), "utf8");
+  return { tracks, written: true };
 }
 
-const tracks = fs.readdirSync(musicRoot, { withFileTypes: true })
-  .filter(entry => entry.isDirectory() && idPattern.test(entry.name))
-  .map(entry => scanFolder(entry.name))
-  .filter(Boolean);
+if (require.main === module) {
+  const result = generateCatalog();
+  if (!result.written)
+    console.log(
+      "No public/music directory yet; generated catalog remains unchanged.",
+    );
+  else
+    console.log(
+      `Imported ${result.tracks.length} audio track(s) into scripts/catalog.generated.js.`,
+    );
+}
 
-fs.writeFileSync(outputPath, buildFile(tracks), 'utf8');
-console.log(`Imported ${tracks.length} audio track(s) into scripts/catalog.generated.js.`);
+module.exports = { buildFile, generateCatalog, scanFolder };

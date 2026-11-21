@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "exportedAt": "2026-11-21T17:26:14.000Z",
+  "playlist": {
+    "id": "34192081-8d06-4efd-86d9-df7ccd9f9c66",
+    "name": "DTRX | Official Releases"
+  },
+  "tracks": [
+    {
+      "sunoId": "7a8b26a4-9b70-4872-831d-dc3b70f955df",
+      "title": "FADING INTO YOU",
+      "duration": 149.72,
+      "style": "Melodic trap, polished modern production with spacious reverb and dark cinematic textures; fingerpicked acoustic guitar leads into ambient synth pads, deep distorted 808 drops, punchy trap kicks, crisp rolling hi-hats, vocal chops and haunting harmonies; intimate raspy male vocals in a high, light upper register, expressive autotune, vulnerable melodic verses and powerful full-voice belted chorus; 130 BPM with a driving trap pulse and bittersweet late-night feel.",
+      "visibility": "public",
+      "coverUrl": "https://cdn1.suno.ai/image_large_7a8b26a4-9b70-4872-831d-dc3b70f955df.jpeg",
+      "songUrl": "https://suno.com/song/7a8b26a4-9b70-4872-831d-dc3b70f955df"
+    },
+    {
+      "sunoId": "789cdf70-98c7-41f5-929f-75995ac43f42",
+      "title": "Falling Into Blue",
+      "duration": 224.04,
+      "style": "Melodic Deep House, Emotional Vocal House: deep warm rolling bassline, punchy four-on-the-floor kick, groovy percussion, shimmering synth plucks, lush atmospheric pads, subtle piano melodies; smooth, soulful female vocals in a dark lower register, intimate and breathy with stacked harmonies on emotional hooks and dreamy echoes; hypnotic 125 BPM pulse, melancholic yet uplifting, gradually building into a powerful melodic drop with euphoric synth layers; polished modern European house production, clean radio-ready mix.",
+      "visibility": "private",
+      "coverUrl": "https://cdn1.suno.ai/image_large_789cdf70-98c7-41f5-929f-75995ac43f42.jpeg",
+      "songUrl": "https://suno.com/song/789cdf70-98c7-41f5-929f-75995ac43f42"
+    },
+    {
+      "sunoId": "41ac1c43-9052-4189-b1b3-2f916bc6248d",
+      "title": "Where We Fade",
+      "duration": 179.8,
+      "style": "Melodic Deep House, Emotional Vocal House; delicate piano motifs trace half-spoken talk-sing rhythms over warm rolling sub-bass, punchy four-on-the-floor kick and groovy organic percussion; shimmering synth plucks, evolving synth arpeggios and lush atmospheric pads carry the hypnotic melancholic atmosphere into a euphoric melodic drop. Polished modern European house production, wide stereo, warm analog textures, powerful clean low-end, sophisticated arrangement and radio-ready mix; 125 BPM, spacious breakdown with piano and fading synths. Soulful female alto vocals in a dark lower register, intimate breathy verses and rising pre-choruses; layered emotional harmonies, dreamy vocal echoes and layered octave doubles lift the final chorus.",
+      "visibility": "public",
+      "coverUrl": "https://cdn1.suno.ai/image_large_41ac1c43-9052-4189-b1b3-2f916bc6248d.jpeg",
+      "songUrl": "https://suno.com/song/41ac1c43-9052-4189-b1b3-2f916bc6248d"
+    },
+    {
+      "sunoId": "70a8d513-b5ca-4b24-b0c5-eba6691b8e25",
+      "title": "Diamond Ruins",
+      "duration": 156.28,
+      "style": "melodic trap Hip Hop, Pop, Trap, R&B, Alternative R&B style 130 bpm heavy 808 bass acoustic guitar intro dark atmosphere emotive vocals hard hitting drums high contrast",
+      "visibility": "public",
+      "coverUrl": "https://cdn1.suno.ai/image_large_70a8d513-b5ca-4b24-b0c5-eba6691b8e25.jpeg",
+      "songUrl": "https://suno.com/song/70a8d513-b5ca-4b24-b0c5-eba6691b8e25"
+    }
+  ]
+}
